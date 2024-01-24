@@ -1,6 +1,9 @@
 site_name: Bliss framework
 theme:
   name: material
+  features:
+# There are glitches when used in caddy
+#   - navigation.instant
 
 markdown_extensions:
   - admonition
