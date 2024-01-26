@@ -11,5 +11,5 @@ jobs:
     with:
       image-name: bliss-framework-web
       image-tag: production
-      deployment-host: web-02.km8.vm
+      deployment-host: web-01.km8.vm
       deployment-dir: bliss-framework-web
