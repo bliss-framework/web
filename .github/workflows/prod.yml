@@ -6,7 +6,7 @@ on:
       - prod
 jobs:
   build:
-    uses: bliss-framework/gha-shared/.github/workflows/deploy-docker-image.yml@master
+    uses: bliss-framework/gha-shared/.github/workflows/deploy-docker-image.yml@prod
     secrets: inherit
     with:
       image-name: bliss-framework-web
