@@ -7,13 +7,12 @@ on:
 jobs:
   build:
     uses: bliss-framework/gha-shared/.github/workflows/deploy-docker-image.yml@prod
-    secrets:
+    with:
       KEENMATE_REGISTRY_USERNAME: ${{ secrets.KEENMATE_REGISTRY_USERNAME }}
       KEENMATE_REGISTRY_PASSWORD: ${{ secrets.KEENMATE_REGISTRY_PASSWORD }}
       BUILDER_SSH_PASSPHRASE: ${{ secrets.BUILDER_SSH_PASSPHRASE }}
       BUILDER_SSH_USERNAME: ${{ secrets.BUILDER_SSH_USERNAME }}
       BUILDER_SSH_KEY: ${{ secrets.BUILDER_SSH_KEY }}
-    with:
       image-name: bliss-framework-web
       image-tag: production
       deployment-host: web-01.km8.vm
