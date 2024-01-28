@@ -13,6 +13,8 @@ env:
 jobs:
   build:
     uses: bliss-framework/gha-shared/.github/workflows/deploy-docker-image.yml@prod
+    secrets:
+        KEENMATE_REGISTRY_USERNAME: ${{ secrets.KEENMATE_REGISTRY_USERNAME }}
     with:
       image-name: bliss-framework-web
       image-tag: production
