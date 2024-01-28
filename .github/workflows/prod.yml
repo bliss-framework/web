@@ -4,26 +4,38 @@ on:
   push:
     branches:
       - prod
-env:
-  KEENMATE_REGISTRY_USERNAME: ${{ secrets.KEENMATE_REGISTRY_USERNAME }}
-  KEENMATE_REGISTRY_PASSWORD: ${{ secrets.KEENMATE_REGISTRY_PASSWORD }}
-  BUILDER_SSH_PASSPHRASE: ${{ secrets.BUILDER_SSH_PASSPHRASE }}
-  BUILDER_SSH_USERNAME: ${{ secrets.BUILDER_SSH_USERNAME }}
-  BUILDER_SSH_KEY: ${{ secrets.BUILDER_SSH_KEY }}
 jobs:
   build:
-    uses: bliss-framework/gha-shared/.github/workflows/deploy-docker-image.yml@prod
-    secrets:
-        KEENMATE_REGISTRY_USERNAME: ${{ secrets.KEENMATE_REGISTRY_USERNAME }}
-    with:
-      image-name: bliss-framework-web
-      image-tag: production
-      deployment-host: web-01.km8.vm
-      deployment-dir: bliss-framework-web
-      keenmate_registry_username: ${{secrets.KEENMATE_REGISTRY_USERNAME}}
-      keenmate_registry_password: ${{env.KEENMATE_REGISTRY_PASSWORD}}
-      builder_ssh_passphrase: ${{env.BUILDER_SSH_PASSPHRASE}}
-      builder_ssh_username: ${{env.BUILDER_SSH_USERNAME}}
-      builder_ssh_key: ${{env.BUILDER_SSH_KEY}}
+    name: Build and deploy image
+    runs-on: self-hosted
+    steps:
+    - uses: actions/checkout@v3
+    - uses: docker/setup-buildx-action@v2
+    - uses: docker/login-action@v2
+      with:
+        registry: registry.km8.es
+        username: ${{ secrets.KEENMATE_REGISTRY_USERNAME }}
+        password: ${{ secrets.KEENMATE_REGISTRY_PASSWORD }}
+    - uses: docker/build-push-action@v3
+      with:
+        context: ${{inputs.docker-build-context}}
+        file: ${{inputs.dockerfile-name}}
+        push: true
+        tags: |
+          registry.km8.es/bliss-framework-web:production
+        build-args: |
+          NPM_SCRIPT=build
+    - uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: web-01.km8.vm
+        port: 22
+        username: ${{ secrets.BUILDER_SSH_USERNAME }}
+        key: ${{ secrets.BUILDER_SSH_KEY }}
+        passphrase: ${{ secrets.BUILDER_SSH_PASSPHRASE }}
+        script: |
+          cd /srv/docker/bliss-framework-web
+          docker-compose down
+          docker-compose pull
+          docker-compose up -d
 
       
