@@ -33,10 +33,10 @@ jobs:
       image-tag: production
       deployment-host: web-01.km8.vm
       deployment-dir: bliss-framework-web
-      KEENMATE_REGISTRY_USERNAME: ${{ vars.KEENMATE_REGISTRY_USERNAME }}
-      KEENMATE_REGISTRY_PASSWORD: ${{ vars.KEENMATE_REGISTRY_PASSWORD }}
-      BUILDER_SSH_PASSPHRASE: ${{ vars.BUILDER_SSH_PASSPHRASE }}
-      BUILDER_SSH_USERNAME: ${{ vars.BUILDER_SSH_USERNAME }}
-      BUILDER_SSH_KEY: ${{ vars.BUILDER_SSH_KEY }}
+      keenmate_registry_username: ${{ vars.KEENMATE_REGISTRY_USERNAME }}
+      keenmate_registry_password: ${{ vars.KEENMATE_REGISTRY_PASSWORD }}
+      builder_ssh_passphrase: ${{ vars.BUILDER_SSH_PASSPHRASE }}
+      builder_ssh_username: ${{ vars.BUILDER_SSH_USERNAME }}
+      builder_ssh_key: ${{ vars.BUILDER_SSH_KEY }}
 
       
