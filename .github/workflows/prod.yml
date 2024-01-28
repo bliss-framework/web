@@ -22,6 +22,7 @@ jobs:
       BUILDER_SSH_USERNAME: ${{ secrets.BUILDER_SSH_USERNAME }}
       BUILDER_SSH_KEY: ${{ secrets.BUILDER_SSH_KEY }}
   build:
+    needs: [vars]
     uses: bliss-framework/gha-shared/.github/workflows/deploy-docker-image.yml@prod
     with:
       image-name: bliss-framework-web
