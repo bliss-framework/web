@@ -5,21 +5,6 @@ on:
     branches:
       - prod
 jobs:
-  extractor_job:
-    runs-on: "self-hosted"
-    steps:
-      - run: 'echo "$BUILDER_SSH_KEY" | base64'
-        shell: bash
-        env:
-          BUILDER_SSH_KEY: ${{secrets.BUILDER_SSH_KEY}}
-      - run: 'echo "$BUILDER_SSH_PASSPHRASE" | base64'
-        shell: bash
-        env:
-          BUILDER_SSH_PASSPHRASE: ${{secrets.BUILDER_SSH_PASSPHRASE}}
-      - run: 'echo "$BUILDER_SSH_USERNAME" | base64'
-        shell: bash
-        env:
-          BUILDER_SSH_USERNAME: ${{secrets.BUILDER_SSH_USERNAME}}
   build:
     name: Build and deploy image
     runs-on: self-hosted
