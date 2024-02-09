@@ -1,4 +1,4 @@
-# What is it and why should you care?
+# Tabs
 
 This page is showcase of cool features of material for mkdocs
 

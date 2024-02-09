@@ -1,4 +1,4 @@
-site_name: Bliss framework
+site_name: Bliss framework - Work in Progress
 theme:
   name: material
   features:
@@ -7,7 +7,7 @@ theme:
 
 nav:
   - Consistency is a bliss: index.html
-  - What is this framework?: what-is-it.md
+  - Key elements: key-elements.md
   - Coding guidelines:
     - coding-guidelines/index.md 
     - Naming conventions: coding-guidelines/naming-convention.md
