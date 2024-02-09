@@ -5,6 +5,14 @@ theme:
 # There are glitches when used in caddy
 #   - navigation.instant
 
+nav:
+  - Consistency is a bliss: index.html
+  - What is this framework?: what-is-it.md
+  - Coding guidelines:
+    - coding-guidelines/index.md 
+    - Naming conventions: coding-guidelines/naming-convention.md
+   
+
 markdown_extensions:
   - admonition
   - pymdownx.details
