@@ -13,9 +13,24 @@ extra:
 nav:
   - Consistency is a bliss: index.html
   - Key elements: key-elements.md
+  - Learning guidelines:
+    - learning-guidelines/index.md 
+  - Analysis guidelines:
+    - analysis-guidelines/index.md 
+    - Naming conventions: analysis-guidelines/naming-convention.md
   - Coding guidelines:
     - coding-guidelines/index.md 
-    - Naming conventions: coding-guidelines/naming-convention.md
+    - General naming conventions: coding-guidelines/general-naming-conventions.md
+    - General structure of code: coding-guidelines/general-structure-of-code.md
+    - Formatting of code: coding-guidelines/formatting-of-code.md
+    - Parameters order: coding-guidelines/parameters-order.md
+    - Return types: coding-guidelines/parameters-order.md
+  - Deployment guidelines:
+    - deployment-guidelines/index.md 
+    - Naming conventions: deployment-guidelines/naming-convention.md
+  - Infrastructure guidelines:
+    - infrastructure-guidelines/index.md 
+    - Naming conventions: infrastructure-guidelines/naming-convention.md
    
 
 markdown_extensions:

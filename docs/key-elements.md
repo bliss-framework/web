@@ -35,6 +35,22 @@ It makes the team faster in understanding what is what, and after a while it com
 
 Our nomenclature is universal and not really dependent on the language or framework we use for our projects.
 
+## Focus on order
+
+When you focus on order in you just slide through your code like hot knife through butter. That's where the bliss and efficiency comes from. You simply know when to look.
+
+We have same naming conventions for directories, projects, files, repositories, batch files and so on. And if we find some older project where we weren't so diligent, we first start with clean up before working on it.
+
+We even have the same setup when it comes to IDE and shortcuts. This helps us to orient on the screen when we are trying to help others.
+
+!!! note "Real life example"
+
+    At [Baťa shoe maker company](https://en.wikipedia.org/wiki/Bata_Corporation), the marvel of efficiency and optimiziation, back in 1930's, every worker on an assembly line had a toolbox that was hanging on a wall. This toolbox contained all tools that worker station required, and it was facing the aisle between the stations. 
+    
+    This toolbox had a red background in shape of every tool, just so when the tool was hanging in the box, the background was not visible. At the end of shift, all that foreman had to do was to walk the aisle and look for red color.
+
+    That's how smart order of things gives you efficiency.
+
 ## Restrain yourself
 
 Over the years you'll be tempted by many, MANY, new frameworks, new language features, new tricks how to be cool.
@@ -50,3 +66,8 @@ Everyone will have to sacrifice some feature and accept another, that is the onl
 Trust me, it doesn't make you more cool if you write code only with ternary and null operators, it just makes your code harder to read. 
 
 Restrain yourself, be readable.
+
+
+## Leave your individuality outside as well
+
+We understand that (almost) everyone has a need to express themselves, to be unique, and that's great, just leave it out of your code, and generally your software related. There's no place for it there.
