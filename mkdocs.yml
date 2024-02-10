@@ -6,6 +6,10 @@ theme:
 # There are glitches when used in caddy
 #   - navigation.instant
 
+extra:
+  analytics:
+    provider: stats
+
 nav:
   - Consistency is a bliss: index.html
   - Key elements: key-elements.md
