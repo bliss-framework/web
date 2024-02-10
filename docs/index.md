@@ -1,3 +1,7 @@
+---
+description: Basic understanding of key elements of our Bliss framework. 
+---
+
 # _Ignorance is a bliss_, but so is consistency
 
 _Ignorance is a bliss_ is a classic quote from Matrix movie. Ignorance can truly bring blissful feelings, but so can consistency in programming.
