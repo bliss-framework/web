@@ -5,6 +5,7 @@ COPY mkdocs.yml /mkdocs.yml
 RUN pip install mkdocs
 RUN pip install mkdocs-material
 
+COPY overrides /overrides
 COPY docs /docs
 
 RUN mkdocs build
