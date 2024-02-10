@@ -1,6 +1,7 @@
 site_name: Bliss framework - Work in Progress
 theme:
   name: material
+  custom_dir: overrides
   features:
 # There are glitches when used in caddy
 #   - navigation.instant
