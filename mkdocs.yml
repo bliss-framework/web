@@ -14,7 +14,8 @@ nav:
   - Consistency is a bliss: index.html
   - Key elements: key-elements.md
   - Learning guidelines:
-    - learning-guidelines/index.md 
+    - learning-guidelines/index.md
+    - Learning spiral: learning-guidelines/learning-spiral.md
   - Analysis guidelines:
     - analysis-guidelines/index.md 
     - Naming conventions: analysis-guidelines/naming-convention.md
@@ -31,7 +32,9 @@ nav:
   - Infrastructure guidelines:
     - infrastructure-guidelines/index.md 
     - Naming conventions: infrastructure-guidelines/naming-convention.md
-   
+
+plugins:
+  - glightbox
 
 markdown_extensions:
   - admonition
