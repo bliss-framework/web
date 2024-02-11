@@ -2,7 +2,7 @@
 
 If we image that all knowledge about certain technology, language a library is a plane, where different aspects of it goes to different directions, as you can see on the example below, when you start with it, you are always in the middle.
 
-![ASP.NET Core - Example of your knowledge about it](/assets/images/aspnet_core_star_diagram.png){ align=left }
+![ASP.NET Core - Example of your knowledge about it](../assets/images/aspnet_core_star_diagram.png){ align=left }
 
 You can always go only one direction, or perhaps two, but not more, and here lays the biggest problem. If you focus on one direction too much, you'll miss the rest of it.
 
