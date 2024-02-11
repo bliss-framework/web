@@ -6,8 +6,8 @@ description: Basic understanding of key elements of our Bliss framework.
 
 _Ignorance is a bliss_ is a classic quote from Matrix movie. Ignorance can truly bring blissful feelings, but so can consistency in programming.
 
-My name is Ondrej Valenta, and this framework is how I lead my little soldiers to find the bliss.
-I'm doing corporate development since 2005, and I'm a programmer since 1997. I've encountered dozens of programmers and worked on dozens of projects, so this framework is not something that I just pulled out of my thumb, it is and always was a necessity for me to sane and on top of things.
+My name is Ondrej Valenta, and this framework is how I lead my little soldiers through this battlefield we call (enterprise) programming, to survive and to find the bliss.
+I'm doing corporate development since 2005, and I'm a programmer since 1997. I've encountered dozens of programmers and worked on dozens of projects, so this framework is not something that I just pulled out of my thumb, it is, and always was, a necessity for me ti stay sane and on top of things.
 
 ## Insanity called programming
 
