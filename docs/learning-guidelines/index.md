@@ -50,9 +50,9 @@ So how to live and learn in this new world of non-lasting technologies and frame
 
 !!! note "Real life example"
 
-    Microsoft in 2008 came up with Windows Presentation Foundation  (WPF), replacement for Windows Forms, that are here from 2002. Both  of these technologies are still here. We are actively developing a   bigger app in WPF. It's not going anywhere. 
+    In 2008, Microsoft came up with Windows Presentation Foundation (WPF), replacement for Windows Forms, which were with us from 2002. Both of these technologies are still usable, they are still relevant. We are actively using WPF for a bigger app for one of our clients. It's not going anywhere. 
 
-    On the other hand, Microsoft came up with Universal Windows     Platform (UWP), sort of replacement of WPF, in 2019, with claims of this being the next best thing, and __only after 2 years__, they deprecated UWP and moved to .NET Multi-platform App UI (.NET MAUI), once again claimed to be the next best thing. Let's see, how long this technology will be around.
+    On the other hand, Microsoft came up with Universal Windows Platform (UWP), sort of replacement of WPF, in 2019, with claims of this being the next best thing, and __only after 2 years__, they deprecated UWP and moved to .NET Multi-platform App UI (.NET MAUI), once again claimed to be the next best thing. Let's see, how long this technology will be around.
 
 
 ## From deep to shallow
