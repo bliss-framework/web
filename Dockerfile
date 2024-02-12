@@ -20,7 +20,7 @@ RUN pip install mkdocs-glightbox mkdocs-git-revision-date-localized-plugin mkdoc
 RUN export
 
 COPY mkdocs.yml mkdocs.yml
-
+COPY .git .git
 COPY overrides overrides
 COPY docs docs
 
