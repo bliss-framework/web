@@ -38,7 +38,7 @@ RUN pip install mkdocs-glightbox mkdocs-git-revision-date-localized-plugin
 
 WORKDIR /app
 
-COPY .git/ ./.git/
+ADD . .
 COPY mkdocs.yml mkdocs.yml
 COPY overrides overrides
 COPY docs docs
