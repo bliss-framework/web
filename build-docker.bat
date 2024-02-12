@@ -1,0 +1,1 @@
+docker build --progress plain -f Dockerfile -t bliss-framework:web .
