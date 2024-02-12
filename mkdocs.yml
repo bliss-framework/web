@@ -6,6 +6,9 @@ theme:
   custom_dir: overrides
   features:
     - content.action.edit
+    - search.suggest
+    - search.highlight
+    - search.share
   icon:
     edit: material/pencil
 # There are glitches when used in caddy
@@ -39,6 +42,7 @@ nav:
     - Naming conventions: infrastructure-guidelines/naming-convention.md
 
 plugins:
+  - search
   - glightbox
   - git-authors
   - git-revision-date-localized:
