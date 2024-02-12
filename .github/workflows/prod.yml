@@ -25,7 +25,8 @@ jobs:
         password: ${{ secrets.KEENMATE_REGISTRY_PASSWORD }}
     - uses: docker/build-push-action@v5
       with:
-        #context: ${{inputs.docker-build-context}}
+        # context: ${{inputs.docker-build-context}}
+        context: .
         file: ${{inputs.dockerfile-name}}
         push: true
         tags: |
