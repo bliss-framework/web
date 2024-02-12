@@ -23,9 +23,9 @@ jobs:
         registry: registry.km8.es
         username: ${{ secrets.KEENMATE_REGISTRY_USERNAME }}
         password: ${{ secrets.KEENMATE_REGISTRY_PASSWORD }}
-    - uses: docker/build-push-action@v3
+    - uses: docker/build-push-action@v5
       with:
-        context: ${{inputs.docker-build-context}}
+        #context: ${{inputs.docker-build-context}}
         file: ${{inputs.dockerfile-name}}
         push: true
         tags: |
