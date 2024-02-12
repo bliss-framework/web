@@ -12,21 +12,21 @@ Chefs and programmers do the same things
 - they have to learn new approaches, new recipies,but they still have to customize them for their catering operation
 - they have their own language, they have no time for miscommunication, for long debates what is what
 
-## Leave your ego outside
-
-As you'll start using this framework, you'll start to feel urges to do something different, to do it better.
-
-The problem with this is that if everyone felt the same way and let his ego get over him then there's no need for any framework.
-
-It doesn't mean you cannot take this framework and adapt it to your own liking, but after you do that be strict on yourself and others, push them to follow the same rules.
-
-__!!! THIS IS CRITICAL !!!__
-
 ## Understandibility
 
-Since we have insight into gastro operations we realize we can describe our process with real life examples from restaurant, which is something even very new programmers can understand.
+Since we have insight into gastro operations, we describe our process with real life examples from restaurant, which is something even very fresh programmers can understand.
 
-If the thing you do feels too complex to explain, it's probably overengineered and you should rethink your strategy.
+If the thing you do feels too complex to explain, it's probably overengineered and you should rethink your approach. Be like Erlang OTP, keep it simple and it will last.
+
+## Leave your ego outside
+
+When you start using this framework, you'll start to feel urges to do something different, to do it better.
+
+The problem with this is, that if everyone felt the same way and let his ego get over him, then there's no need for any framework.
+
+It doesn't mean you cannot take this framework and adapt it to your environment, but after you do that, be strict on yourself and others, push them to follow the same rules.
+
+__!!! THIS IS CRITICAL !!!__
 
 ## Nomenclature
 
