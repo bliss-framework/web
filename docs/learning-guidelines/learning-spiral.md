@@ -1,10 +1,10 @@
 # Learning spiral
 
-If we image that all knowledge about certain technology, language a library is a plane, where different aspects of it goes to different directions, as you can see on the example below, when you start with it, you are always in the middle.
+Imagine that all knowledge about certain technology, language or library is a plane, where different aspects of it goes to different directions, see example below. When you start learning it, you always start in the middle.
 
 ![ASP.NET Core - Example of your knowledge about it](../assets/images/aspnet_core_star_diagram.png){ align=left }
 
-You can always go only one direction, or perhaps two, but not more, and here lays the biggest problem. If you focus on one direction too much, you'll miss the rest of it.
+As you can always go only one direction, or two, you can never go more, and that's the biggest problem with learning something new. When you focus too much on one direction, you'll miss the rest of them.
 
 That's why we learn in a spiral. We always start with the simplest thing possible, which is installation, and then we start collecting knowledge by small dips, here and there.
 
