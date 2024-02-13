@@ -15,7 +15,7 @@ Programming is not for the faint of heart. It's one of the most difficult jobs o
 
 The main cause of all our problems is the ever changing character of our environment. The technology you used today, you can forget tomorrow, the way you did something today, tomorrow will others claim as obsolete, as the old world approach.
 
-The reality is you'll have to study, study, study, forget everything and study some more. The only thing that remains the same is you, and your coding practices.
+The reality is, you'll have to study, study, study, forget everything, and study some more. The only thing that remains the same is you, and your coding habbits and practices.
 
 
 ## YOU MUST BE REPLACEABLE
