@@ -24,6 +24,7 @@ nav:
   - Learning guidelines:
     - learning-guidelines/index.md
     - Learning spiral: learning-guidelines/learning-spiral.md
+    - Recommended path: learning-guidelines/recommended-path.md
   - Analysis guidelines:
     - analysis-guidelines/index.md 
     - Naming conventions: analysis-guidelines/naming-convention.md
