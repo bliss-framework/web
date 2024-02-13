@@ -18,7 +18,7 @@ That's why we learn in a spiral. We always start with the simplest thing possibl
 
 There is no way around it, until you repeat something 10s, 100s and even 1000s of times, it won't be truly stored in your brain.
 
-We understand we live in the age of ChatGPT and Copilot, in times of easy code generation, it's almost like magic, but, in the end, you are just cheating yourself, you cannot learn something by watching someone else do it for you.
+We understand, we live in the age of ChatGPT and Copilot, in times of easy code generation, it's almost like magic, but, in the end, you are just cheating yourself, you cannot learn something by watching someone else do it for you.
 
 There is a silver lining in all of this, though. The more you repeat tasks in one technology, the easier is to learn another. Your brain will start to see patterns and similarities in different technologies, and with each technology it will be more simple and easier.
 
