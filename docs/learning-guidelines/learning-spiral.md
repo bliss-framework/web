@@ -67,3 +67,45 @@ Even if he was able to build it, trust us, it's MUCH harder than it looks on vid
 !!! warning "Remember"
     
     You have to start with simple tools to be able to appreciate more complex ones.
+
+
+## Can we actually teach you something?
+
+Yes and No. As was stated above, even if we tell you to do something 100 000 times, you still won't be able to fully understand it and accept it. This will only come with time, so you have to trust us and our system.
+
+This happened to us many times before, and it will happen many times in the future.
+
+Great example.
+
+If we tell you that this piece of code
+
+=== "C#"
+
+    ``` c#
+    
+    public bool CalculateHeroDamage(int baseAttackMin, int baseAttackMax, int baseArmor, int missChance = 5) {
+      return new Random().Next(1, 100) <= missChance ? (new Random().Next(baseAttackMin, baseAttackMax) - baseArmor) : 0;
+    }
+    ```
+
+is worse than this piece of code
+
+=== "C#"
+
+    ``` c#
+    
+    public bool CalculateHeroDamage(int baseAttackMin, int baseAttackMax, int baseArmor, int missChance = 5) {
+        var random = new Random(DateTime.Now.Milliseconds);
+
+        var missed = random.Next(1, 100) <= missChance;
+        var attack = random.Next(baseAttackMin, baseAttackMax);
+        var result = missed ? ( attack - baseArmor) : 0;
+      
+      return result;
+    }
+
+    ```
+
+you will not believe us. Even if we tell you, it's better for debugging and the code is optimized by compiler, at some point in your career, you'll be tempted to use the first variant. The first variant is so slick and slim, the second one is for old programmers that cannot comprehend good, high quality code anymore. We get it, we've all been there.
+
+After a while, you'll also start to prefer long term readability over coolness factor. It's a slow but natural process.
