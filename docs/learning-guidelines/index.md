@@ -42,7 +42,7 @@ So how to live and learn in this new world of non-lasting technologies and frame
 
 - first learn to distinguish what technology is going to last and which is not
   - this can be deduced by who is backing it up, is it a huge community, is is a big company like Google
-  - check the Github repository to see when was the latest commit and if there are any active forks
+  - check the GitHub repository to see when was the latest commit and if there are any active forks
 - try not to jump on every buzz technology. Very few of them will survive few years
 - ready yourself that your beloved technology might be abandoned or transformed to something else at any point in time
 - if you really want to be safe, go with big boys. Use technologies used by Microsoft, Google, Apple, Amazon and so on, or with technologies that are here for a long time. For example, PostgreSQL, Erlang OTP, Java, .NET

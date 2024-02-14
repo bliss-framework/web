@@ -1,35 +1,35 @@
 ---
-description: Basic understanding of key elements of our Bliss framework. 
+description: What is Bliss framework and what are its parts. 
 ---
 
-# _Ignorance is a bliss_, but so is consistency
+# What is Bliss framework and Why should you care?
 
-_Ignorance is a bliss_ is a classic quote from Matrix movie. Ignorance can truly bring blissful feelings, but so can consistency in programming.
+My name is Ondrej Valenta, and this framework is how I lead my little soldiers through this battlefield we call (enterprise) programming, this is how I lead them to survive and to find the bliss in what they are doing.
 
-My name is Ondrej Valenta, and this framework is how I lead my little soldiers through this battlefield we call (enterprise) programming, to survive and to find the bliss.
-I'm doing corporate development since 2005, and I'm a programmer since 1997. I've encountered dozens of programmers and worked on dozens of projects, so this framework is not something that I just pulled out of my thumb, it is, and always was, a necessity for me ti stay sane and on top of things.
+I'm in corporate development since 2005, and I'm a programmer since 1997. I've encountered dozens of programmers and worked on dozens of projects, so this framework is not something that I just pulled out of my thumb, it is, and always was, a necessity for me to stay sane and on top of things while leading others.
 
-## Be replaceable
+## Parts of this framework
 
-One of the most important aspects of (enterprise) programming is to realize, you must be replaceable, since you are replaceable. Everyone is, and that's ok, it's a good thing. It means you can also replace someone else.
+These are the fundamental parts of Bliss framework. Beside our manifesto, which is this site, there are Docker-compose templates, different project templates, PostgreSQL table templates, installation manuals and so on.
 
-We are a tiny [company](https://keenmate.com){:target="_blank"} and yet we have more than 200 repositories on GitHub. We've done so many different projects and proof-of-concepts over the years, that our replaceability is absolutely key element.
+All of this to be faster in what we, and you, do. (while trying to keep it as simple as possible)
 
-It's important to understand that if our nomenclature, our code structure, our approach to stuff is the same, we can easily jump from one project to another, we can easily help out others. We know exactly what to expect from the code, where to find things, how to name things so others understand them. 
+<div class="grid cards" markdown>
 
-This makes us very flexible, agile, it takes almost no time to switch projects.
+- [:fontawesome-solid-dna: __Consistency is bliss__ manifesto](./consistency-is-bliss.md)
+- [:fontawesome-brands-docker: __Docker-compose__ templates](https://github.com/bliss-framework/docker-compose-templates){:target="_blank"}
+- [:fontawesome-solid-database: __PostgreSQL__ installation/configuration](https://github.com/bliss-framework/postgresql-installation-configuration)
 
-If you are now thinking, but hey, I'm just a solo programmer, I don't need others to understand my code, then hear this. We have projects running 5, 10, even 15 years with almost zero changes in code, it's almost certain one day we'll have to come back to them and exactly then will be so happy we find the same code structure as we use today.
+</div>
 
-__Remember, you are also replaceable by your future self.__
+## Feedback and discussion
 
-You'll thank yourself later.
+We believe you'll find this framework useful, but if you have some questions, remarks or generally feedback, you can use standard GitHub [Issues](https://github.com/bliss-framework/web/issues){target:"_blank"} and [Discussion](https://github.com/bliss-framework/web/discussions){target:"_blank"}
 
+## Disclaimer
 
-## Insanity called programming
+We don't claim we know everything, or that we know it better than you, or that we covered every aspect of programmers life, or that your way of life is compatible with ours. 
 
-Programming is not for the faint of heart. It's one of the most difficult jobs on this planet. Those who laugh at this claim have never really done programming.
+We just claim that by following rules described in this manifesto, our programming skills got better, and our interoperability among different projects and teams has been greatly increased.
 
-The main cause of all our problems is the ever changing character of our environment. The technology you used today, you can forget tomorrow, the way you did something today, tomorrow will others claim as obsolete, as the old world approach.
-
-The reality is, you'll have to study, study, study, forget everything, and study some more. The only thing that remains the same is you, and your coding habits and practices.
+We claim that this manifesto helped us find bliss.
