@@ -38,3 +38,7 @@ Repeat those tasks over and over, until you are feel like you know what you are 
 - then look at Bootstrap HTML/CSS framework
     - it will help you get nice websites up and running in no time
 - continue to [Svelte.dev](https://svelte.dev/examples/hello-world){:target="_blank"}, which gives you an opportunity to make web applications more alive
+
+## Infrastructure skills
+
+- learn at least basics of DNS

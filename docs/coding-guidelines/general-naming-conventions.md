@@ -1,4 +1,6 @@
-# Naming
+# General naming conventions
+
+Now, let's discuss how we approach naming conventions. 
 
 ## Class
 
