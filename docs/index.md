@@ -16,7 +16,7 @@ All of this to be faster in what we, and you, do. (while trying to keep it as si
 
 <div class="grid cards" markdown>
 
-- [:fontawesome-solid-dna: __Consistency is bliss__ manifesto](./consistency-is-bliss.md)
+- [:fontawesome-solid-dna: __Consistency is a bliss__ manifesto](./consistency-is-bliss.md)
 - [:fontawesome-brands-docker: __Docker-compose__ templates](https://github.com/bliss-framework/docker-compose-templates){:target="_blank"}
 - [:fontawesome-solid-database: __PostgreSQL__ installation/configuration](https://github.com/bliss-framework/postgresql-installation-configuration)
 

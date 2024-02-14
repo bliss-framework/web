@@ -1,5 +1,5 @@
 ---
-description: Basic understanding of key elements of our Bliss framework. 
+description: Basic understanding of key elements of our Bliss Framework. 
 ---
 
 # _Ignorance is a bliss_, but so is consistency
