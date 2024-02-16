@@ -17,11 +17,20 @@ There are basically three different types of languages explorers, programmers th
 
 ### Militant
 
-Militant programmers are those that claims that one language approach (functional, procedural, OOP) is better than the others, and if you are not seeing it that way, use something else and don't bother them.
+Militant programmers are those that claims one language, or philosophy (functional, procedural, OOP), is better than the others, and if you are not seeing it that way, use something else and don't bother them.
+
+Militant programmers are convinced everything is possible and best done in the language/philosophy they use, and they are willing to spend hours and hours trying to solve problem at hand with what they use rather than accept there might be a better way to do it.
 
 ### Promiscuous
 
+Promiscuous programmers are those that have really no allegiance to any language or philosophy and they simply use what is currently available, or considered best at that time and place. 
+
+We are not really against that, free love and all ☮, but this leads to very fragmented landscape of your projects. You cannot possible learn all of these languages, so you write, most probably, low quality code in all of them.
+
 ### Pragmatic
+
+Pragmatic programmers accept there are better languages for different domains of problems, they accept every philosophy brings different pros and cons. 
+
 
 ## Impure sandwich
 
