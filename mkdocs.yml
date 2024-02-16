@@ -25,6 +25,7 @@ nav:
   - Learning guidelines:
     - learning-guidelines/index.md
     - Learning spiral: learning-guidelines/learning-spiral.md
+    - Functional vs OOP programming: learning-guidelines/functional-vs-OOP-programming.md
     - Recommended path: learning-guidelines/recommended-path.md
   - Analysis guidelines:
     - analysis-guidelines/index.md 

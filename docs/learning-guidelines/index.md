@@ -46,7 +46,7 @@ So how to live and learn in this new world of non-lasting technologies and frame
 - try not to jump on every buzz technology. Very few of them will survive more than just few years
 - ready yourself that your beloved technology might be abandoned or transformed to something else at any point in time
 - if you really want to be safe, go with big boys. Use technologies used by Microsoft, Google, Apple, Amazon and so on, or with technologies that are here for a long time. For example, PostgreSQL, Erlang OTP, Java, .NET
-- also notice how complicated the technology is. As much as some programmers have a fetish for complexity and mastering it, usually the technology that is quite complicated and harder to use won't survive. People like simple things, in the end
+- also notice how complicated the technology is. As much as some programmers have a fetish for complexity and mastering it, usually the technology that is quite complicated and harder to use won't survive. People like simple things, in the end, and also only the technology that easy to learn by young programmers will have steady income of new people using it
 
 !!! note "Real life example"
 
