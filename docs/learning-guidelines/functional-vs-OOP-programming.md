@@ -15,11 +15,13 @@ We won't cover every little aspect of these groups, there are better comparisons
 
 There are basically three different types of languages explorers, programmers that don't stick to one language their whole life.
 
-### Militant
+### Fundamentally militant
 
 Militant programmers are those that claims one language, or philosophy (functional, procedural, OOP), is better than the others, and if you are not seeing it that way, use something else and don't bother them.
 
-Militant programmers are convinced everything is possible and best done in the language/philosophy they use, and they are willing to spend hours and hours trying to solve problem at hand with what they use rather than accept there might be a better way to do it.
+Militant programmers are convinced everything is possible and best done in the language/philosophy they use, and they are willing to spend hours and hours trying to solve the problem at hand with what they use rather than accept the fact there might be a better way to do it.
+
+It might be tempting to show allegiance to certain language or philosophy, but in the end it will just hurt you in long run.
 
 ### Promiscuous
 
