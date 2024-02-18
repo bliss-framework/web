@@ -26,12 +26,15 @@ nav:
     - learning-guidelines/index.md
     - Learning spiral: learning-guidelines/learning-spiral.md
     - Functional vs OOP programming: learning-guidelines/functional-vs-OOP-programming.md
+    - Basic vocabulary: learning-guidelines/basic-vocabulary.md
+    - Basic principles: learning-guidelines/basic-principles.md
     - Recommended path: learning-guidelines/recommended-path.md
   - Analysis guidelines:
     - analysis-guidelines/index.md 
     - Naming conventions: analysis-guidelines/naming-convention.md
   - Coding guidelines:
     - coding-guidelines/index.md 
+    - Layers of application: coding-guidelines/layers-of-application.md
     - General naming conventions: coding-guidelines/general-naming-conventions.md
     - General structure of code: coding-guidelines/general-structure-of-code.md
     - Formatting of code: coding-guidelines/formatting-of-code.md
@@ -55,14 +58,17 @@ plugins:
 markdown_extensions:
   - admonition
   - pymdownx.details
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span
       pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
-  - pymdownx.superfences
   - pymdownx.tabbed:
       alternate_style: true
   - attr_list

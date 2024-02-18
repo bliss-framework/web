@@ -10,15 +10,6 @@ Before we tell you about out code structure, we need to have a discussion about 
 
 Over the years, we have all in our team written dozens of different apps, and if we were to write them all in one file, without any code division to reusable parts, it would take us so much more time.
 
-When you start programming, you have nothing, but with each project, you create your own library of reusable pieces of code, library that in each next project you enrich, you reuse, you make your own go to library. This will make you a lot faster, and instead of a coder, which spends time writing the same code over and over, you'll become a programmer that appears like a magician.
+When you start programming, you have nothing, but with each project, you create your own library of reusable pieces of code, library that in each next project you enrich, you reuse, you make your own go to library. This will make you a lot faster, and instead of a coder, which spends time writing the same code over and over, you'll become a programmer that appears like a magician to others.
 
 So divide and conquer.
-
-## The code structure
-
-All our applications are divided to three basic layers.
-
-- UI/input/output layer
-- management layer
-- data providers layer
-
