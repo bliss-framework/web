@@ -15,32 +15,32 @@ We are quite militant about this.
 For example, when it comes to string constants in code, we don't allow ourselves to repeat it even once. We immediately put it in _Constants_ folder, where it belongs and in all other places use it as a reference.
 
 
-## Protection by abstraction
+## Protect yourself with abstraction and encapsulation
 
 !!! warning "Remember"
 
     [There's no problem in Computer Science that can't be solved by adding another layer of abstraction to it](https://stackoverflow.com/questions/2057503/does-anybody-know-from-where-the-layer-of-abstraction-layer-of-indirection-q)
 
 
-You can find [definition and details of abstraction here](https://www.indeed.com/career-advice/career-development/abstraction-in-computer-science), but the basic idea is this.
+You can find [definition and details of abstraction here](https://www.indeed.com/career-advice/career-development/abstraction-in-computer-science), and of [encapsulation here](https://en.wikipedia.org/wiki/Encapsulation_(computer_programming)), but the basic idea is this.
 
-Abstraction could be also called Obfuscation, because you obfuscate technical implementation details behind easy to use facade.
+Abstraction with encapsulation could be also called Obfuscation, because you obfuscate technical implementation details behind easy to use facade.
 
-In real life, you see abstractions everywhere. When you use light switch you are effectively using abstraction of power circuit, you don't know what the light switch does, or how it works inside, you just know it has two positions, ON/OFF, and that's all you need to know for using it effectively.
+In real life, you see abstractions and encapsulations everywhere. When you use light switch, you don't know what the light switch does, or how it works inside, you just know it has two positions, ON/OFF, and that's all you need to know for using it effectively. The technical details are hidden and that makes you a productive user of light switch.
 
-In our framework, abstractions are also present everywhere. As you will see in [Coding guides / Layers of application](../coding-guidelines/layers-of-application.md), each layer of code represents an abstraction of functionality below this level.
+In our framework, abstractions and encapsulations are also present everywhere. As you will see in [Coding guides / Layers of application](../coding-guidelines/layers-of-application.md), each layer of code represents an abstraction and encapsulations of functionality below this level.
 
 For example, Management layer has zero idea of what kind of database our applications is connected to, it is the database provider that knows such thing, nobody else needs to know. 
 
-__Abstraction does not only bring you simplicity and clarity in your work, it also brings you safety and a lot less of work.__
+__This approach does not only bring you simplicity and clarity in your work, it also brings you safety and a lot less of reworks.__
 
 What this mean in practice? In practice, it means, that any code that could lead to leak of technical details to upper layers of code, must be reworked to general code that gives no such details.
 
-Imagine, your application is connected to MySQL database, you have not abstracted this detail behind a provider layer and generic models, and you use MySQL data types all over your code base. At some point you will decide to switch to PostgreSQL, as you should, what this means for you? 
+Imagine, your application is connected to MySQL database, you have not abstracted and encapsulated this detail behind a provider layer and generic models, you use MySQL data types all over your code base. At some point you will decide to switch to PostgreSQL, as you should, what this means for you? 
 
 It means you will have to rewrite basically whole application to get rid of MySQL types and code, and use PostgreSQL instead.
 
-If you would have hidden your database calls behind generic database provider and returned plain data models with standard types, all you would have to change, when switching to PostgreSQL, would be one database provider.
+If you would have hidden your database calls behind generic database provider and returned plain data models with standard types, all you would have to change, when switching to PostgreSQL, would be that one database provider, the rest of the application would not be affected by this.
 
 
 ## Use only what you need
@@ -62,5 +62,5 @@ For example, interfaces in C#, an abstraction of an abstraction, a tool very use
 
 The thing is, if you have only one provider of coffee in your application, there is zero sense creating an interface that will add yet another layer of abstraction, that is completely unnecessary at that point and will only slow you down while traversing or modifying your code. 
 
-So use things only when you really need them, do not use them prematurely just because someone told you so.
+Do not use too much, too soon, use things only when you really need them, do not use them prematurely just because someone told you that is the way to be a good programmer.
 
