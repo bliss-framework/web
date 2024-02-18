@@ -73,24 +73,8 @@ There is a catch, though, the basic characteristic of providers is they have onl
 
 Side layer is the layer that contains, generally speaking, not necessary, and yet helpful parts of your code. You could live without them, they usually have no impact on data processing, but they tend to make your life easier in long run, thanks to reusability of your code and conciseness.
 
-Visually, you can imagine the side layer like this.
-``` mermaid
-block-beta
-columns 1
-  db(("DB"))
-  blockArrowId6<["&nbsp;&nbsp;&nbsp;"]>(down)
-  block:ID
-    A
-    B["A wide one in the middle"]
-    C
-  end
-  space
-  D
-  ID --> D
-  C --> D
-  style B fill:#969,stroke:#333,stroke-width:4px
+Visually, you can imagine the side layer as a column standing next to the Trio of basic layers. It's a layer of code that is independent on those three.
 
-```
 As a general rule, we can say, that if you see a piece of code that has a potential to be repeated in different parts of your code, it belongs to side layer.
 
 For example, imagine you want to ensure (create, if it doesn't exist already) a folder. You could put that piece of code in your provider, but it would be more useful to put it to `DirectoryHelper`, and call DirectoryHelper from provider instead. This way you can take that helper with you to another project, and the code to ensure directory is only at one place.
@@ -99,8 +83,14 @@ We are going to mention just few different types of objects in Side layer
 
 ### Models
 
-Models 
+Models as data containers that you have in your application. Models have no internal logic, they are mere vessels for data. Models ensure consistency of your data in the application.
+
+For example, when you load data from database, you could just store them into an array, and retrieve them with index, but this is quite dangerous. What if the data structure in database changes, column order would be messed up. If you transform your data to a model, and return 
+
 ### Mappers
+
+Mappers transform data, either from one model to another, or to some other structure based on what is needed. You would typically use mappers when loading data from database.
+
 ### Helpers
 ### Extensions
 ### Constants
