@@ -11,7 +11,7 @@ Of course, every project has a unique set of words, but we try to share as many 
 
 ## Singular vs Plural
 
-We use singular and plural forms in natural form, for example, if we have a database provider working with users, the name of that provider would be _UsersProvider_, because it works with all users, and not just single user.
+We use singular and plural forms in natural form, for example, if we have a database provider working with users, the name of that provider would be _UsersProvider_, because it works with all users, and not just a single user.
 
 ## Same conventions through the system
 
@@ -39,18 +39,18 @@ This is a list of standard verbs we use to describe an action:
 - Get - get functions return object(s) as they are, in a complete set
 - Search - search functions return object(s) based on criteria and paging settings (page size, page number)
 - Process - process functions are used for mass processing of data, for example, when you import data to a _stage_ table and then run a function that process them to final data stored in _public_ table
-- Map - map table is used for mapping functions
-- Send - send methods are used for actions related to email, SMS or other notification service
+- Map - map functions are used for mapping objects from one type to another, generally speaking, for data transformations
 
 There are also some specific verbs we use to describe specific actions:
 
 - Generate - generate functions generate data based on inputs
 - Parse - parse functions parse input data, usually, CSV files, Excel sheets, text files, and others
 - (Bulk)Copy - copy functions are special functions that, usually, copy data in big chunks to database with _COPY_ command
+- Send - send methods are used for actions related to email, SMS or other notification service, for example, _SendEmail_, _SendNotification_, and so on
 
 ## Name structure
 
-Names in our framework follow simple rules:
+Names in our framework follow these simple rules:
 
 - For object names: [noun in plural form] + [object type name], for example, _UsersController_, _UsersHelper_, _UsersManager_, and so on
 - For endpoints: [noun in plural form], for example, /api/users, /api/groups, and so on
