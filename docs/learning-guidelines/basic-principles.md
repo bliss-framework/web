@@ -64,3 +64,21 @@ The thing is, if you have only one provider of coffee in your application, there
 
 Do not use too much, too soon, use things only when you really need them, do not use them prematurely just because someone told you that is the way to be a good programmer.
 
+As an example, we can mention GraphQL, which was very popular few years back and who had not accessed data with GraphQL was completely ousted from society. GraphQL has definite advantages in very specific scenarios, but it brings a HUGE overhead, and you really don't need it unless you are Facebook or a project with enormous dataset, enormous when it comes to structure.
+
+## Domain Driven Development
+
+When it comes to [Domain Driven Development](https://redis.com/glossary/domain-driven-design-ddd/#:~:text=Domain-Driven%20Design%20(DDD)%20is%20a%20software%20development%20philosophy,the%20business%20needs%20it%20serves.) we really use only some of the ideas.
+
+Mainly, we stick to the principal of _Ubiquitous Language_, which basically states that before you start doing anything on a project, you first have to define vocabulary of what is what, as we shortly mentioned in [Key elements - Nomenclature](../key-elements.md#nomenclature).
+
+In real life, this would mean, for example, that our application has this vocabulary:
+
+- User
+- User group
+- User group member
+- User settings
+
+The important thing is to not deviate from this vocabulary. User is always user, not customer, user. User settings are called user settings, not preferences, not just settings, but user settings.
+
+This is crucial for clear understanding of what is what. For example, name of the method _CreateUserSettings_ of _UserProvider_ is quite self-explanatory, and everyone knows what it does. If you called it _CreatePreferences_ it's unclear and others would have to ask you or study the implementation.

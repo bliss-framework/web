@@ -47,6 +47,19 @@ nav:
     - infrastructure-guidelines/index.md 
     - Naming conventions: infrastructure-guidelines/naming-convention.md
 
+  - C#/.NET guidelines:
+    - coding-guidelines-csharp/index.md 
+    - Naming conventions: coding-guidelines-csharp/naming-conventions.md
+
+  - Elixir/Phoenix guidelines:
+    - coding-guidelines-elixir/index.md 
+    - Naming conventions: coding-guidelines-elixir/naming-conventions.md
+
+  - PostgreSQL guidelines:
+    - coding-guidelines-postgres/index.md 
+    - Naming conventions: coding-guidelines-postgres/naming-conventions.md
+
+
 plugins:
   - search
   - glightbox
