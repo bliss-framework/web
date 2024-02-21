@@ -75,5 +75,6 @@ There are language/framework specific naming conventions for every language/fram
 - [__C#/.NET__ ](../coding-guidelines-csharp/naming-conventions.md)
 - [__Elixir__](../coding-guidelines-elixir/naming-conventions.md)
 - [__PostgreSQL__](../coding-guidelines-postgres/naming-conventions.md)
+- [__Svelte.dev__](../coding-guidelines-svelte/naming-conventions.md)
 
 </div>

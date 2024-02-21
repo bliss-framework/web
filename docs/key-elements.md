@@ -67,6 +67,10 @@ Trust me, it doesn't make you more cool, if you write your code only with ternar
 
 __Restrain yourself, be readable.__
 
+## Plan for tomorrow, build for today
+
+
+
 
 ## Leave your individuality outside as well
 

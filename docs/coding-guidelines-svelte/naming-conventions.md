@@ -1,0 +1,1 @@
+# Svelte.dev naming conventions
