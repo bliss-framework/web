@@ -59,6 +59,6 @@ So how to live and learn in this new world of non-lasting technologies and frame
 
 With technologies dying and being created every day, we don't have the luxury to learn them deeply. First, it's pointless, it's usually a waste of time, secondly, they get updates so rapidly, we are not really able to learn them properly.
 
-That's why we stick to technologies that are here for long time. .NET, Erlang OTP, PostgreSQL and when it comes to Javascript world we stick with [Svelte.dev](https://svelte.dev) because it's simple enough to survive in this world, and it's with us for several years.
+That's why we stick to technologies that are here for long time. .NET, Erlang OTP, PostgreSQL and when it comes to Javascript, we stick with [Svelte.dev](https://svelte.dev), because it's simple enough to survive trend changes. It's with us for several years and I don't see it going away.
 
 In any case, whatever technology you pick, we suggest to learn in iterations, do not try to comprehend it all at once, there's no time for that anymore, and there's no point doing so.
