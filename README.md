@@ -1,4 +1,4 @@
-# Bliss Framework - Consistency is a bliss
+# Bliss Framework - Consistency is bliss
 
 This framework describes our approach to programming, life, and everything. It is intended to save you from mistakes we had to make to learn to survive in this crazy world of programming.
 
