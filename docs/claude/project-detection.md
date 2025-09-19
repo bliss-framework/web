@@ -91,7 +91,7 @@ Which best describes your project? (enter number + letter, e.g., "1a" for Svelte
 
 ## 📋 Tech Stack Registry
 
-Reference: [tech-stacks.json](../claude-guidelines/tech-stacks.json)
+Reference: [tech-stacks.json](tech-stacks.json)
 
 ### Detection Patterns
 Each tech stack includes:
@@ -271,7 +271,7 @@ Please select (1-3):
     "confidenceThreshold": 70,
     "fallbackToManual": true,
     "cacheDetection": true,
-    "registryUrl": "https://bliss-framework.org/claude-guidelines/tech-stacks.json"
+    "registryUrl": "https://bliss-framework.org/claude/tech-stacks.json"
   }
 }
 ```

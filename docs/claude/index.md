@@ -75,7 +75,7 @@ Example CLAUDE.md reference:
 # CLAUDE.md
 
 This project follows the Bliss Framework Claude Guidelines.
-See: https://bliss-framework.org/claude-guidelines/
+See: https://bliss-framework.org/claude/
 
 ## Project-Specific Instructions
 [Project-specific content here]

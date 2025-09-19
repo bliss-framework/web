@@ -28,7 +28,7 @@ Before loading guidelines, Claude Code must:
 2. **Analyze Dependencies** - Check package.json, requirements.txt, etc.
 3. **Determine Tech Stack** - Use [project detection system](project-detection.md)
 4. **Ask User if Uncertain** - Confirm ambiguous or unrecognized stacks
-5. **Load Appropriate Guidelines** - Fetch tech-specific guidelines from [tech stack registry](../claude-guidelines/tech-stacks.json)
+5. **Load Appropriate Guidelines** - Fetch tech-specific guidelines from [tech stack registry](tech-stacks.json)
 
 ## 📚 Required Guidelines
 
@@ -36,35 +36,35 @@ Before loading guidelines, Claude Code must:
 Claude Code must read and internalize these universal guidelines first:
 
 ### 1. General Principles ⚡
-- **URL**: [General Principles](../claude-guidelines/general-principles.md)
+- **URL**: [General Principles](general-principles.md)
 - **Current Version**: `1.0.0`
 - **Last Modified**: `2025-01-19T00:00:00Z`
 - **Priority**: Critical
 - **Description**: Core working principles, communication patterns, and development workflow
 
 ### 2. Naming Conventions 📝
-- **URL**: [Naming Conventions](../claude-guidelines/naming-conventions.md)
+- **URL**: [Naming Conventions](naming-conventions.md)
 - **Current Version**: `1.0.0`
 - **Last Modified**: `2025-01-19T00:00:00Z`
 - **Priority**: Critical
 - **Description**: Standardized naming patterns across all technologies and file types
 
 ### 3. Architecture Patterns 🏗️
-- **URL**: [Architecture Patterns](../claude-guidelines/architecture-patterns.md)
+- **URL**: [Architecture Patterns](architecture-patterns.md)
 - **Current Version**: `1.0.0`
 - **Last Modified**: `2025-01-19T00:00:00Z`
 - **Priority**: Critical
 - **Description**: Three-layer architecture, provider patterns, and implementation guidelines
 
 ### 4. Project Templates 📁
-- **URL**: [Project Templates](../claude-guidelines/project-templates.md)
+- **URL**: [Project Templates](project-templates.md)
 - **Current Version**: `1.0.0`
 - **Last Modified**: `2025-01-19T00:00:00Z`
 - **Priority**: High
 - **Description**: Standardized project structures for different technology stacks
 
 ### 5. Common Solutions 🔧
-- **URL**: [Common Solutions](../claude-guidelines/common-solutions.md)
+- **URL**: [Common Solutions](common-solutions.md)
 - **Current Version**: `1.0.0`
 - **Last Modified**: `2025-01-19T00:00:00Z`
 - **Priority**: High
@@ -74,7 +74,7 @@ Claude Code must read and internalize these universal guidelines first:
 After detecting the project technology stack, Claude Code should load additional guidelines:
 
 #### Available Tech Stacks
-Reference: [Tech Stack Registry](../claude-guidelines/tech-stacks.json)
+Reference: [Tech Stack Registry](tech-stacks.json)
 
 #### Example: SvelteKit Project
 ```
@@ -129,7 +129,7 @@ Enter number (1-10):
 ## 🔄 Version Management
 
 ### Version Manifest
-The current versions of all guidelines are tracked in: [versions.json](../claude-guidelines/versions.json)
+The current versions of all guidelines are tracked in: [versions.json](versions.json)
 
 ### Version Checking Process
 1. **Initial Load**: Store version information for all loaded guidelines
@@ -320,10 +320,10 @@ Ready for SvelteKit development with Bliss Framework patterns
 
 ## 🔗 Quick Links
 
-- [Version Manifest](../claude-guidelines/versions.json) - Current versions of all guidelines
-- [Claude Guidelines Home](../claude-guidelines/) - Overview and navigation
+- [Version Manifest](versions.json) - Current versions of all guidelines
+- [Claude Code Home](index.md) - Overview and navigation
 - [GitHub Repository](https://github.com/bliss-framework/web) - Source code and issue tracking
 
 ---
 
-**Next Steps**: After reading this page, Claude Code should proceed to load all guidelines in the order specified above, starting with [General Principles](../claude-guidelines/general-principles.md).
+**Next Steps**: After reading this page, Claude Code should proceed to load all guidelines in the order specified above, starting with [General Principles](general-principles.md).

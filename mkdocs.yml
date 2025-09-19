@@ -59,17 +59,15 @@ nav:
     - coding-guidelines-postgres/index.md
     - Naming conventions: coding-guidelines-postgres/naming-conventions.md
 
-  - Claude Guidelines:
-    - claude-guidelines/index.md
-    - General Principles: claude-guidelines/general-principles.md
-    - Naming Conventions: claude-guidelines/naming-conventions.md
-    - Architecture Patterns: claude-guidelines/architecture-patterns.md
-    - Project Templates: claude-guidelines/project-templates.md
-    - Common Solutions: claude-guidelines/common-solutions.md
-
   - Claude Code:
+    - claude/index.md
     - Initialize: claude/init.md
     - Project Detection: claude/project-detection.md
+    - General Principles: claude/general-principles.md
+    - Naming Conventions: claude/naming-conventions.md
+    - Architecture Patterns: claude/architecture-patterns.md
+    - Project Templates: claude/project-templates.md
+    - Common Solutions: claude/common-solutions.md
 
 
 plugins:

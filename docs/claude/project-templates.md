@@ -16,7 +16,7 @@ Every project should include a `CLAUDE.md` file at the root:
 # CLAUDE.md
 
 This project follows the Bliss Framework Claude Guidelines.
-See: https://bliss-framework.org/claude-guidelines/
+See: https://bliss-framework.org/claude/
 
 ## Project Overview
 [Brief description of what this project does]

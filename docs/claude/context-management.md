@@ -17,13 +17,13 @@ Claude Code should maintain guideline information persistently across sessions u
       "frameworkVersion": "1.0.0",
       "lastUpdateCheck": "2025-01-19T14:30:00Z",
       "initializationUrl": "https://bliss-framework.org/claude/init/",
-      "manifestUrl": "https://bliss-framework.org/claude-guidelines/versions.json"
+      "manifestUrl": "https://bliss-framework.org/claude/versions.json"
     },
     "guidelines": {
       "general-principles": {
         "version": "1.0.0",
         "loadedAt": "2025-01-19T14:30:00Z",
-        "url": "https://bliss-framework.org/claude-guidelines/general-principles/",
+        "url": "https://bliss-framework.org/claude/general-principles/",
         "checksum": "sha256:abc123...",
         "priority": "critical",
         "status": "loaded",
@@ -37,7 +37,7 @@ Claude Code should maintain guideline information persistently across sessions u
       "naming-conventions": {
         "version": "1.0.0",
         "loadedAt": "2025-01-19T14:30:00Z",
-        "url": "https://bliss-framework.org/claude-guidelines/naming-conventions/",
+        "url": "https://bliss-framework.org/claude/naming-conventions/",
         "checksum": "sha256:def456...",
         "priority": "critical",
         "status": "loaded",
@@ -51,7 +51,7 @@ Claude Code should maintain guideline information persistently across sessions u
       "architecture-patterns": {
         "version": "1.0.0",
         "loadedAt": "2025-01-19T14:30:00Z",
-        "url": "https://bliss-framework.org/claude-guidelines/architecture-patterns/",
+        "url": "https://bliss-framework.org/claude/architecture-patterns/",
         "checksum": "sha256:ghi789...",
         "priority": "critical",
         "status": "loaded",
@@ -65,7 +65,7 @@ Claude Code should maintain guideline information persistently across sessions u
       "project-templates": {
         "version": "1.0.0",
         "loadedAt": "2025-01-19T14:30:00Z",
-        "url": "https://bliss-framework.org/claude-guidelines/project-templates/",
+        "url": "https://bliss-framework.org/claude/project-templates/",
         "checksum": "sha256:jkl012...",
         "priority": "high",
         "status": "loaded",
@@ -78,7 +78,7 @@ Claude Code should maintain guideline information persistently across sessions u
       "common-solutions": {
         "version": "1.0.0",
         "loadedAt": "2025-01-19T14:30:00Z",
-        "url": "https://bliss-framework.org/claude-guidelines/common-solutions/",
+        "url": "https://bliss-framework.org/claude/common-solutions/",
         "checksum": "sha256:mno345...",
         "priority": "high",
         "status": "loaded",
@@ -144,7 +144,7 @@ Claude Code should maintain guideline information persistently across sessions u
 {
   "action": "check_guideline_updates",
   "steps": [
-    "Fetch https://bliss-framework.org/claude-guidelines/versions.json",
+    "Fetch https://bliss-framework.org/claude/versions.json",
     "Compare stored versions with current manifest",
     "Identify guidelines needing updates",
     "Report update status to user"
