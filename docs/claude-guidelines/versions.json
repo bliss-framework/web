@@ -1,0 +1,41 @@
+{
+  "lastUpdated": "2025-01-19T00:00:00Z",
+  "currentVersion": "1.0.0",
+  "guidelines": {
+    "general-principles": {
+      "version": "1.0.0",
+      "lastModified": "2025-01-19T00:00:00Z",
+      "url": "https://bliss-framework.org/claude-guidelines/general-principles/",
+      "checksum": "sha256:abc123...",
+      "description": "Core working principles and collaboration patterns"
+    },
+    "naming-conventions": {
+      "version": "1.0.0",
+      "lastModified": "2025-01-19T00:00:00Z",
+      "url": "https://bliss-framework.org/claude-guidelines/naming-conventions/",
+      "checksum": "sha256:def456...",
+      "description": "Standardized naming across all projects"
+    },
+    "architecture-patterns": {
+      "version": "1.0.0",
+      "lastModified": "2025-01-19T00:00:00Z",
+      "url": "https://bliss-framework.org/claude-guidelines/architecture-patterns/",
+      "checksum": "sha256:ghi789...",
+      "description": "Three-layer architecture and implementation patterns"
+    },
+    "project-templates": {
+      "version": "1.0.0",
+      "lastModified": "2025-01-19T00:00:00Z",
+      "url": "https://bliss-framework.org/claude-guidelines/project-templates/",
+      "checksum": "sha256:jkl012...",
+      "description": "Standardized project structures for different tech stacks"
+    },
+    "common-solutions": {
+      "version": "1.0.0",
+      "lastModified": "2025-01-19T00:00:00Z",
+      "url": "https://bliss-framework.org/claude-guidelines/common-solutions/",
+      "checksum": "sha256:mno345...",
+      "description": "Reusable solutions for recurring problems"
+    }
+  }
+}

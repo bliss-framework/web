@@ -1,0 +1,216 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-01-19T00:00:00Z",
+  "techStacks": {
+    "sveltekit": {
+      "name": "SvelteKit",
+      "description": "Full-stack web framework with Svelte",
+      "detectionPatterns": [
+        "svelte.config.js",
+        "package.json contains @sveltejs/kit",
+        "src/routes/+page.svelte",
+        "src/app.html"
+      ],
+      "guidelines": [
+        "coding-guidelines-svelte/index.md",
+        "coding-guidelines-svelte/naming-conventions.md"
+      ],
+      "projectTemplate": "project-templates.md#sveltekit-template",
+      "commonSolutions": [
+        "common-solutions.md#svelte-component-patterns",
+        "common-solutions.md#sveltekit-api-patterns"
+      ]
+    },
+    "node-express": {
+      "name": "Node.js + Express",
+      "description": "Node.js backend API with Express framework",
+      "detectionPatterns": [
+        "package.json contains express",
+        "server.js or app.js exists",
+        "routes/ folder exists",
+        "controllers/ folder exists"
+      ],
+      "guidelines": [
+        "coding-guidelines-typescript/index.md",
+        "coding-guidelines-typescript/naming-conventions.md"
+      ],
+      "projectTemplate": "project-templates.md#nodejs-express-api-template",
+      "commonSolutions": [
+        "common-solutions.md#express-middleware-patterns",
+        "common-solutions.md#nodejs-error-handling"
+      ]
+    },
+    "csharp-webapi": {
+      "name": "C# Web API",
+      "description": "ASP.NET Core Web API",
+      "detectionPatterns": [
+        "*.csproj with Microsoft.AspNetCore",
+        "Program.cs exists",
+        "Controllers/ folder exists",
+        "appsettings.json exists"
+      ],
+      "guidelines": [
+        "coding-guidelines-csharp/index.md",
+        "coding-guidelines-csharp/naming-conventions.md"
+      ],
+      "projectTemplate": "project-templates.md#csharp-web-api-template",
+      "commonSolutions": [
+        "common-solutions.md#csharp-dependency-injection",
+        "common-solutions.md#aspnet-core-patterns"
+      ]
+    },
+    "elixir-phoenix": {
+      "name": "Elixir + Phoenix",
+      "description": "Phoenix web framework with Elixir",
+      "detectionPatterns": [
+        "mix.exs exists",
+        "mix.exs contains phoenix",
+        "lib/*/application.ex exists",
+        "lib/*_web/ folder exists"
+      ],
+      "guidelines": [
+        "coding-guidelines-elixir/index.md",
+        "coding-guidelines-elixir/naming-conventions.md"
+      ],
+      "projectTemplate": "project-templates.md#elixir-phoenix-template",
+      "commonSolutions": [
+        "common-solutions.md#elixir-genserver-patterns",
+        "common-solutions.md#phoenix-liveview-patterns"
+      ]
+    },
+    "react-nextjs": {
+      "name": "React + Next.js",
+      "description": "React framework with Next.js",
+      "detectionPatterns": [
+        "package.json contains next",
+        "next.config.js exists",
+        "pages/ or app/ folder exists",
+        "package.json contains react"
+      ],
+      "guidelines": [
+        "coding-guidelines-typescript/index.md",
+        "coding-guidelines-react/index.md"
+      ],
+      "projectTemplate": "project-templates.md#nextjs-template",
+      "commonSolutions": [
+        "common-solutions.md#react-component-patterns",
+        "common-solutions.md#nextjs-api-routes"
+      ]
+    },
+    "vue-nuxt": {
+      "name": "Vue + Nuxt",
+      "description": "Vue framework with Nuxt.js",
+      "detectionPatterns": [
+        "package.json contains nuxt",
+        "nuxt.config.js or nuxt.config.ts exists",
+        "pages/ folder exists",
+        "package.json contains vue"
+      ],
+      "guidelines": [
+        "coding-guidelines-typescript/index.md",
+        "coding-guidelines-vue/index.md"
+      ],
+      "projectTemplate": "project-templates.md#nuxt-template",
+      "commonSolutions": [
+        "common-solutions.md#vue-composition-patterns",
+        "common-solutions.md#nuxt-server-patterns"
+      ]
+    },
+    "python-fastapi": {
+      "name": "Python + FastAPI",
+      "description": "Modern Python web framework",
+      "detectionPatterns": [
+        "requirements.txt contains fastapi",
+        "pyproject.toml contains fastapi",
+        "main.py with FastAPI import",
+        "routers/ folder exists"
+      ],
+      "guidelines": [
+        "coding-guidelines-python/index.md",
+        "coding-guidelines-python/naming-conventions.md"
+      ],
+      "projectTemplate": "project-templates.md#python-fastapi-template",
+      "commonSolutions": [
+        "common-solutions.md#python-async-patterns",
+        "common-solutions.md#fastapi-dependency-injection"
+      ]
+    },
+    "postgres-database": {
+      "name": "PostgreSQL Database",
+      "description": "PostgreSQL database project",
+      "detectionPatterns": [
+        "migrations/ folder exists",
+        "*.sql files exist",
+        "schema.sql exists",
+        "docker-compose.yml contains postgres"
+      ],
+      "guidelines": [
+        "coding-guidelines-postgres/index.md",
+        "coding-guidelines-postgres/naming-conventions.md"
+      ],
+      "projectTemplate": "project-templates.md#postgres-database-template",
+      "commonSolutions": [
+        "common-solutions.md#postgres-migration-patterns",
+        "common-solutions.md#database-indexing-strategies"
+      ]
+    },
+    "mobile-react-native": {
+      "name": "React Native",
+      "description": "Cross-platform mobile app development",
+      "detectionPatterns": [
+        "package.json contains react-native",
+        "metro.config.js exists",
+        "android/ and ios/ folders exist",
+        "App.tsx or App.js exists"
+      ],
+      "guidelines": [
+        "coding-guidelines-typescript/index.md",
+        "coding-guidelines-react-native/index.md"
+      ],
+      "projectTemplate": "project-templates.md#react-native-template",
+      "commonSolutions": [
+        "common-solutions.md#react-native-navigation",
+        "common-solutions.md#mobile-state-management"
+      ]
+    },
+    "desktop-electron": {
+      "name": "Electron Desktop App",
+      "description": "Cross-platform desktop application",
+      "detectionPatterns": [
+        "package.json contains electron",
+        "main.js or main.ts exists",
+        "preload.js exists",
+        "build/ or dist-electron/ exists"
+      ],
+      "guidelines": [
+        "coding-guidelines-typescript/index.md",
+        "coding-guidelines-electron/index.md"
+      ],
+      "projectTemplate": "project-templates.md#electron-template",
+      "commonSolutions": [
+        "common-solutions.md#electron-ipc-patterns",
+        "common-solutions.md#desktop-app-packaging"
+      ]
+    }
+  },
+  "detectionOrder": [
+    "sveltekit",
+    "react-nextjs",
+    "vue-nuxt",
+    "node-express",
+    "csharp-webapi",
+    "elixir-phoenix",
+    "python-fastapi",
+    "mobile-react-native",
+    "desktop-electron",
+    "postgres-database"
+  ],
+  "fallback": {
+    "name": "Generic Project",
+    "description": "Project with unrecognized stack",
+    "guidelines": [
+      "coding-guidelines/index.md"
+    ],
+    "projectTemplate": "project-templates.md#generic-template"
+  }
+}

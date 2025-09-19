@@ -56,8 +56,20 @@ nav:
     - Naming conventions: coding-guidelines-elixir/naming-conventions.md
 
   - PostgreSQL guidelines:
-    - coding-guidelines-postgres/index.md 
+    - coding-guidelines-postgres/index.md
     - Naming conventions: coding-guidelines-postgres/naming-conventions.md
+
+  - Claude Guidelines:
+    - claude-guidelines/index.md
+    - General Principles: claude-guidelines/general-principles.md
+    - Naming Conventions: claude-guidelines/naming-conventions.md
+    - Architecture Patterns: claude-guidelines/architecture-patterns.md
+    - Project Templates: claude-guidelines/project-templates.md
+    - Common Solutions: claude-guidelines/common-solutions.md
+
+  - Claude Code:
+    - Initialize: claude/init.md
+    - Project Detection: claude/project-detection.md
 
 
 plugins:
