@@ -1,0 +1,271 @@
+BLISS FRAMEWORK - CLAUDE CODE PROJECT TEMPLATES
+Version: 1.0.0
+Last Modified: 2025-01-19T00:00:00Z
+Category: Implementation Guidelines
+Priority: High
+
+Standardized project structures and setup templates for different technology stacks.
+
+=== CLAUDE.MD TEMPLATE ===
+
+Every project should include a CLAUDE.md file at the root:
+
+```markdown
+# CLAUDE.md
+
+This project follows the Bliss Framework Claude Guidelines.
+See: https://bliss-framework.org/claude/
+
+## Project Overview
+[Brief description of what this project does]
+
+## Technology Stack
+- Language: TypeScript/C#/Elixir
+- Framework: SvelteKit/ASP.NET Core/Phoenix
+- Database: PostgreSQL/SQLite/MongoDB
+- Testing: Vitest/xUnit/ExUnit
+
+## Architecture
+This project follows the three-layer architecture:
+- IO Layer: [Controllers/Routes location]
+- Management Layer: [Managers location]
+- Provider Layer: [Providers location]
+- Side Layer: [Models, Mappers, Helpers location]
+
+## Commands
+
+### Development
+# Start development server
+[command]
+
+# Run tests
+[command]
+
+# Lint code
+[command]
+
+### Build
+# Build for production
+[command]
+
+## Project-Specific Guidelines
+[Any project-specific deviations or additions]
+```
+
+=== SVELTEKIT TEMPLATE ===
+
+Project Structure:
+project-name/
+├── src/
+│   ├── routes/                 # SvelteKit routes (IO Layer)
+│   │   ├── api/               # API endpoints
+│   │   │   ├── users/
+│   │   │   │   ├── +server.ts
+│   │   │   │   └── [id]/+server.ts
+│   │   │   └── orders/
+│   │   └── (app)/             # App routes
+│   │       ├── dashboard/
+│   │       └── profile/
+│   ├── lib/
+│   │   ├── managers/          # Management Layer
+│   │   ├── providers/         # Provider Layer
+│   │   ├── models/            # Side Layer
+│   │   ├── mappers/
+│   │   ├── helpers/
+│   │   ├── constants/
+│   │   └── components/        # UI Components
+│   ├── app.html
+│   └── app.d.ts
+├── tests/
+├── package.json
+├── CLAUDE.md
+└── README.md
+
+Key Files:
+- src/routes/api/users/+server.ts (API endpoints)
+- package.json scripts: dev, build, test, lint, type-check
+
+=== NODE.JS/EXPRESS API TEMPLATE ===
+
+Project Structure:
+project-name/
+├── src/
+│   ├── controllers/           # IO Layer
+│   ├── routes/               # IO Layer
+│   ├── middleware/           # IO Layer
+│   ├── managers/             # Management Layer
+│   ├── providers/            # Provider Layer
+│   ├── models/               # Side Layer
+│   ├── mappers/
+│   ├── helpers/
+│   ├── constants/
+│   └── app.ts               # Application entry
+├── tests/
+├── package.json
+├── CLAUDE.md
+└── README.md
+
+Key Files:
+- src/app.ts (Express app setup)
+- src/controllers/user-controller.ts (Request handlers)
+
+=== C# WEB API TEMPLATE ===
+
+Project Structure:
+ProjectName/
+├── Controllers/              # IO Layer
+├── Managers/                 # Management Layer
+├── Providers/                # Provider Layer
+├── Models/                   # Side Layer
+├── Mappers/
+├── Helpers/
+├── Constants/
+├── Program.cs
+├── appsettings.json
+├── CLAUDE.md
+└── README.md
+
+Key Files:
+- Controllers/UsersController.cs (API controllers)
+- Program.cs (App configuration)
+
+=== DOCKER TEMPLATES ===
+
+SvelteKit Dockerfile:
+```dockerfile
+# Build stage
+FROM node:18-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+# Production stage
+FROM node:18-alpine AS runner
+WORKDIR /app
+COPY --from=builder /app/build build/
+COPY --from=builder /app/package.json .
+RUN npm ci --only=production
+EXPOSE 3000
+CMD ["node", "build"]
+```
+
+Node.js API Dockerfile:
+```dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY dist/ ./dist/
+EXPOSE 3000
+USER node
+CMD ["node", "dist/app.js"]
+```
+
+C# Web API Dockerfile:
+```dockerfile
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+EXPOSE 80
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY ["ProjectName.csproj", "./"]
+RUN dotnet restore
+COPY . .
+RUN dotnet build -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "ProjectName.dll"]
+```
+
+=== TESTING TEMPLATES ===
+
+Vitest Configuration:
+```typescript
+// vite.config.js
+import { defineConfig } from 'vite';
+import { sveltekit } from '@sveltejs/kit/vite';
+
+export default defineConfig({
+    plugins: [sveltekit()],
+    test: {
+        include: ['src/**/*.{test,spec}.{js,ts}'],
+        environment: 'jsdom'
+    }
+});
+```
+
+Test Structure Example:
+```typescript
+// tests/unit/managers/user-manager.test.ts
+describe('UserManager', () => {
+    const mockUserProvider = {
+        getUserById: vi.fn(),
+        createUser: vi.fn()
+    };
+
+    const userManager = new UserManager(mockUserProvider);
+
+    describe('createUser', () => {
+        it('should create user successfully', async () => {
+            const userData = { email: 'test@example.com' };
+            const result = await userManager.createUser(userData);
+
+            expect(result.success).toBe(true);
+        });
+    });
+});
+```
+
+=== ENVIRONMENT CONFIGURATION ===
+
+Development Environment:
+```bash
+# .env.development
+DATABASE_URL=postgresql://localhost:5432/project_dev
+API_BASE_URL=http://localhost:3000
+LOG_LEVEL=debug
+```
+
+Production Environment:
+```bash
+# .env.production
+DATABASE_URL=${DATABASE_CONNECTION_STRING}
+API_BASE_URL=https://api.production.com
+LOG_LEVEL=info
+```
+
+Environment Types:
+```typescript
+// src/lib/types/environment.ts
+export interface Environment {
+    DATABASE_URL: string;
+    API_BASE_URL: string;
+    LOG_LEVEL: 'debug' | 'info' | 'warn' | 'error';
+}
+```
+
+=== PACKAGE.JSON SCRIPTS ===
+
+Standard Scripts:
+```json
+{
+    "scripts": {
+        "dev": "vite dev",
+        "build": "vite build",
+        "preview": "vite preview",
+        "test": "vitest",
+        "test:ui": "vitest --ui",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "type-check": "svelte-check --tsconfig ./tsconfig.json"
+    }
+}
+```

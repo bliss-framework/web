@@ -23,7 +23,7 @@ Claude Code should maintain guideline information persistently across sessions u
       "general-principles": {
         "version": "1.0.0",
         "loadedAt": "2025-01-19T14:30:00Z",
-        "url": "https://bliss-framework.org/claude/general-principles/",
+        "url": "https://bliss-framework.org/claude/general-principles.txt",
         "checksum": "sha256:abc123...",
         "priority": "critical",
         "status": "loaded",
@@ -37,7 +37,7 @@ Claude Code should maintain guideline information persistently across sessions u
       "naming-conventions": {
         "version": "1.0.0",
         "loadedAt": "2025-01-19T14:30:00Z",
-        "url": "https://bliss-framework.org/claude/naming-conventions/",
+        "url": "https://bliss-framework.org/claude/naming-conventions.txt",
         "checksum": "sha256:def456...",
         "priority": "critical",
         "status": "loaded",
@@ -51,7 +51,7 @@ Claude Code should maintain guideline information persistently across sessions u
       "architecture-patterns": {
         "version": "1.0.0",
         "loadedAt": "2025-01-19T14:30:00Z",
-        "url": "https://bliss-framework.org/claude/architecture-patterns/",
+        "url": "https://bliss-framework.org/claude/architecture-patterns.txt",
         "checksum": "sha256:ghi789...",
         "priority": "critical",
         "status": "loaded",
@@ -65,7 +65,7 @@ Claude Code should maintain guideline information persistently across sessions u
       "project-templates": {
         "version": "1.0.0",
         "loadedAt": "2025-01-19T14:30:00Z",
-        "url": "https://bliss-framework.org/claude/project-templates/",
+        "url": "https://bliss-framework.org/claude/project-templates.txt",
         "checksum": "sha256:jkl012...",
         "priority": "high",
         "status": "loaded",
@@ -78,7 +78,7 @@ Claude Code should maintain guideline information persistently across sessions u
       "common-solutions": {
         "version": "1.0.0",
         "loadedAt": "2025-01-19T14:30:00Z",
-        "url": "https://bliss-framework.org/claude/common-solutions/",
+        "url": "https://bliss-framework.org/claude/common-solutions.txt",
         "checksum": "sha256:mno345...",
         "priority": "high",
         "status": "loaded",

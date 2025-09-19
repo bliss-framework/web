@@ -1,0 +1,306 @@
+BLISS FRAMEWORK - CLAUDE CODE ARCHITECTURE PATTERNS
+Version: 1.0.0
+Last Modified: 2025-01-19T00:00:00Z
+Category: Core Guidelines
+Priority: Critical
+
+Standardized architectural patterns and implementation guidelines for all projects.
+
+=== THREE-LAYER ARCHITECTURE ===
+
+Fundamental Pattern:
+IO Layer ← → Management Layer ← → Provider Layer
+                    ↑
+                Side Layer
+           (Models, Mappers, Helpers)
+
+Layer Responsibilities:
+
+IO Layer:
+- Handle external communication
+- Receive and validate input
+- Format and send responses
+- Handle authentication/authorization
+- Rate limiting and request logging
+
+Management Layer:
+- Orchestrate business logic
+- Coordinate between providers
+- Implement business rules
+- Handle complex operations
+- Manage transactions
+
+Provider Layer:
+- Perform specific tasks
+- Database operations
+- External API calls
+- File system operations
+- Cache management
+
+Side Layer:
+- Support all layers with shared utilities
+- Models (data structures)
+- Mappers (data transformation)
+- Helpers (utility functions)
+- Constants and enums
+
+=== CRITICAL ARCHITECTURE RULES ===
+
+Rule 1: No Provider-to-Provider Communication
+✗ WRONG: Providers calling each other
+✓ CORRECT: Manager orchestrates
+
+Rule 2: Providers Return Domain Models
+✗ WRONG: Returning raw database rows
+✓ CORRECT: Returning domain models
+
+Rule 3: Error Handling at Layer Boundaries
+- Providers: Return null/throw specific errors
+- Managers: Return Result objects
+- IO Layer: Convert to HTTP responses
+
+=== IMPLEMENTATION EXAMPLES ===
+
+IO Layer Example (API Controller):
+```typescript
+export class UserController {
+    constructor(private userManager: UserManager) {}
+
+    async getUser(req: Request, res: Response) {
+        const { id } = this.validateGetUserRequest(req);
+        const result = await this.userManager.getUserById(id);
+
+        if (!result.success) {
+            return res.status(404).json({ error: result.error });
+        }
+
+        res.json(this.formatUserResponse(result.data));
+    }
+}
+```
+
+Management Layer Example:
+```typescript
+export class UserManager {
+    constructor(
+        private userProvider: UserProvider,
+        private emailProvider: EmailProvider,
+        private auditProvider: AuditProvider
+    ) {}
+
+    async createUser(userData: CreateUserRequest): Promise<Result<User>> {
+        try {
+            const validation = this.validateUserData(userData);
+            if (!validation.success) {
+                return { success: false, error: validation.error };
+            }
+
+            const user = await this.userProvider.createUser(userData);
+            await this.emailProvider.sendWelcomeEmail(user.email);
+            await this.auditProvider.logUserCreation(user.id);
+
+            return { success: true, data: user };
+        } catch (error) {
+            return { success: false, error: error.message };
+        }
+    }
+}
+```
+
+Provider Layer Example:
+```typescript
+export class UserProvider {
+    constructor(private db: Database) {}
+
+    async getUserById(id: string): Promise<User | null> {
+        const row = await this.db.query(
+            'SELECT * FROM users WHERE id = $1',
+            [id]
+        );
+
+        return row ? this.mapRowToUser(row) : null;
+    }
+
+    async createUser(userData: CreateUserData): Promise<User> {
+        const row = await this.db.query(
+            'INSERT INTO users (email, name) VALUES ($1, $2) RETURNING *',
+            [userData.email, userData.name]
+        );
+
+        return this.mapRowToUser(row);
+    }
+}
+```
+
+=== COMMON PATTERNS ===
+
+Result Pattern:
+```typescript
+export interface Result<T> {
+    success: boolean;
+    data?: T;
+    error?: string;
+}
+
+// Usage
+const result = await userManager.createUser(userData);
+if (result.success) {
+    console.log(result.data);
+} else {
+    console.error(result.error);
+}
+```
+
+Repository Pattern (for Providers):
+```typescript
+export interface UserProvider {
+    getUserById(id: string): Promise<User | null>;
+    createUser(userData: CreateUserData): Promise<User>;
+    updateUser(id: string, changes: Partial<User>): Promise<User>;
+    deleteUser(id: string): Promise<void>;
+}
+```
+
+Factory Pattern:
+```typescript
+export class ServiceFactory {
+    static createUserService(config: Config): UserManager {
+        const userProvider = new DatabaseUserProvider(config.database);
+        const emailProvider = new EmailProvider(config.email);
+        const auditProvider = new AuditProvider(config.audit);
+
+        return new UserManager(userProvider, emailProvider, auditProvider);
+    }
+}
+```
+
+=== PROJECT STRUCTURE TEMPLATE ===
+
+Standard Structure:
+src/
+├── io/                     # IO Layer
+│   ├── controllers/        # HTTP controllers
+│   ├── routes/            # Route definitions
+│   ├── middleware/        # Request middleware
+│   └── validators/        # Input validation
+│
+├── managers/              # Management Layer
+│   ├── user-manager.ts
+│   ├── order-manager.ts
+│   └── payment-manager.ts
+│
+├── providers/             # Provider Layer
+│   ├── database/
+│   │   ├── user-provider.ts
+│   │   └── order-provider.ts
+│   ├── external/
+│   │   ├── email-provider.ts
+│   │   └── payment-provider.ts
+│   └── file/
+│       └── storage-provider.ts
+│
+├── models/               # Side Layer - Data structures
+│   ├── user.ts
+│   ├── order.ts
+│   └── payment.ts
+│
+├── mappers/              # Side Layer - Data transformation
+│   ├── user-mapper.ts
+│   └── order-mapper.ts
+│
+├── helpers/              # Side Layer - Utilities
+│   ├── date-helper.ts
+│   ├── validation-helper.ts
+│   └── crypto-helper.ts
+│
+├── constants/            # Side Layer - Configuration
+│   ├── app-constants.ts
+│   └── error-messages.ts
+│
+└── types/               # Side Layer - Type definitions
+    ├── api-types.ts
+    └── database-types.ts
+
+=== TECHNOLOGY-SPECIFIC ADAPTATIONS ===
+
+SvelteKit Project:
+src/
+├── routes/               # SvelteKit routes (IO Layer)
+├── lib/
+│   ├── managers/
+│   ├── providers/
+│   ├── models/
+│   ├── mappers/
+│   ├── helpers/
+│   └── constants/
+└── app.html
+
+Node.js/Express API:
+src/
+├── controllers/          # Express controllers (IO Layer)
+├── routes/              # Express routes (IO Layer)
+├── middleware/          # Express middleware (IO Layer)
+├── managers/            # Management Layer
+├── providers/           # Provider Layer
+├── models/              # Domain models
+├── mappers/             # Data transformation
+├── helpers/             # Utilities
+└── constants/           # Configuration
+
+C# Web API:
+ProjectName/
+├── Controllers/         # ASP.NET controllers (IO Layer)
+├── Managers/           # Management Layer
+├── Providers/          # Provider Layer
+├── Models/             # Domain models
+├── Mappers/            # Data transformation
+├── Helpers/            # Utilities
+└── Constants/          # Configuration
+
+=== TESTING ARCHITECTURE ===
+
+Test Structure Mirrors Code:
+tests/
+├── unit/
+│   ├── managers/
+│   ├── providers/
+│   ├── mappers/
+│   └── helpers/
+├── integration/
+│   ├── api/
+│   └── database/
+└── e2e/
+    └── user-flows/
+
+Testing Each Layer:
+- Provider tests: Unit with mocked database
+- Manager tests: Unit with mocked providers
+- Controller tests: Integration with real dependencies
+
+=== PERFORMANCE CONSIDERATIONS ===
+
+Database Optimization:
+- Use connection pooling
+- Implement query batching
+- Add proper indexes
+- Use transactions for multi-operation flows
+
+Caching Strategy:
+- Provider-level caching for external APIs
+- Manager-level caching for computed results
+- HTTP-level caching for static responses
+
+Async/Await Best Practices:
+✓ Good: Parallel execution when possible
+```typescript
+const [user, orders] = await Promise.all([
+    userProvider.getUserById(userId),
+    orderProvider.getOrdersByUserId(userId)
+]);
+```
+
+✗ Bad: Sequential when parallel is possible
+```typescript
+const user = await userProvider.getUserById(userId);
+const orders = await orderProvider.getOrdersByUserId(userId);
+```

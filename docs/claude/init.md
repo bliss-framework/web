@@ -35,36 +35,45 @@ Before loading guidelines, Claude Code must:
 ### Core Guidelines (Always Required)
 Claude Code must read and internalize these universal guidelines first:
 
+!!! important "Use Raw Text Files"
+    Claude Code should fetch and read the **Raw Text URLs** (.txt files) for direct content access.
+    The Web View links (.md files) are for human browsing only.
+
 ### 1. General Principles ⚡
-- **URL**: [General Principles](general-principles.md)
+- **Raw Text URL**: [general-principles.txt](general-principles.txt)
+- **Web View**: [General Principles](general-principles.md)
 - **Current Version**: `1.0.0`
 - **Last Modified**: `2025-01-19T00:00:00Z`
 - **Priority**: Critical
 - **Description**: Core working principles, communication patterns, and development workflow
 
 ### 2. Naming Conventions 📝
-- **URL**: [Naming Conventions](naming-conventions.md)
+- **Raw Text URL**: [naming-conventions.txt](naming-conventions.txt)
+- **Web View**: [Naming Conventions](naming-conventions.md)
 - **Current Version**: `1.0.0`
 - **Last Modified**: `2025-01-19T00:00:00Z`
 - **Priority**: Critical
 - **Description**: Standardized naming patterns across all technologies and file types
 
 ### 3. Architecture Patterns 🏗️
-- **URL**: [Architecture Patterns](architecture-patterns.md)
+- **Raw Text URL**: [architecture-patterns.txt](architecture-patterns.txt)
+- **Web View**: [Architecture Patterns](architecture-patterns.md)
 - **Current Version**: `1.0.0`
 - **Last Modified**: `2025-01-19T00:00:00Z`
 - **Priority**: Critical
 - **Description**: Three-layer architecture, provider patterns, and implementation guidelines
 
 ### 4. Project Templates 📁
-- **URL**: [Project Templates](project-templates.md)
+- **Raw Text URL**: [project-templates.txt](project-templates.txt)
+- **Web View**: [Project Templates](project-templates.md)
 - **Current Version**: `1.0.0`
 - **Last Modified**: `2025-01-19T00:00:00Z`
 - **Priority**: High
 - **Description**: Standardized project structures for different technology stacks
 
 ### 5. Common Solutions 🔧
-- **URL**: [Common Solutions](common-solutions.md)
+- **Raw Text URL**: [common-solutions.txt](common-solutions.txt)
+- **Web View**: [Common Solutions](common-solutions.md)
 - **Current Version**: `1.0.0`
 - **Last Modified**: `2025-01-19T00:00:00Z`
 - **Priority**: High
