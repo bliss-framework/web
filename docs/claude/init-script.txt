@@ -1,0 +1,164 @@
+BLISS FRAMEWORK - CLAUDE INITIALIZATION SCRIPT
+Version: 1.0.0
+Purpose: Download guidelines locally to project
+
+=== INITIALIZATION WORKFLOW ===
+
+STEP 1 - CHECK EXISTING:
+```bash
+# Check if already initialized
+if [ -d "claude" ] && [ -f "claude/manifest.json" ]; then
+    echo "Found existing claude/ folder"
+    cat claude/manifest.json
+    # Ask: Update? (y/n)
+else
+    echo "No claude/ folder found, initializing..."
+fi
+```
+
+STEP 2 - DETECT PROJECT:
+```bash
+# Try auto-detection
+if [ -f "svelte.config.js" ]; then
+    PROJECT_TYPE="sveltekit"
+elif [ -f "package.json" ] && grep -q "express" package.json; then
+    PROJECT_TYPE="express"
+elif [ -f "*.csproj" ]; then
+    PROJECT_TYPE="csharp"
+else
+    # Ask user
+    echo "What type of project is this?"
+    echo "1) SvelteKit"
+    echo "2) Node.js/Express"
+    echo "3) C# Web API"
+    echo "4) Python/FastAPI"
+    echo "5) Other"
+    read -p "Select (1-5): " choice
+fi
+```
+
+STEP 3 - CREATE STRUCTURE:
+```bash
+# Create claude folder
+mkdir -p claude
+
+# Download core guidelines
+BASE_URL="https://blissframework.dev/claude"
+
+curl -s "$BASE_URL/general-principles.txt" > claude/general-principles.txt
+curl -s "$BASE_URL/naming-conventions.txt" > claude/naming-conventions.txt
+curl -s "$BASE_URL/architecture-patterns.txt" > claude/architecture-patterns.txt
+curl -s "$BASE_URL/project-templates.txt" > claude/project-templates.txt
+curl -s "$BASE_URL/common-solutions.txt" > claude/common-solutions.txt
+
+echo "✅ Downloaded core guidelines"
+```
+
+STEP 4 - TECH-SPECIFIC:
+```bash
+# Based on PROJECT_TYPE, download additional
+case "$PROJECT_TYPE" in
+    "sveltekit")
+        # Download Svelte-specific if available
+        curl -s "$BASE_URL/svelte-patterns.txt" > claude/svelte-patterns.txt 2>/dev/null
+        ;;
+    "express")
+        # Download Node-specific if available
+        curl -s "$BASE_URL/node-patterns.txt" > claude/node-patterns.txt 2>/dev/null
+        ;;
+    "csharp")
+        # Download C#-specific if available
+        curl -s "$BASE_URL/csharp-patterns.txt" > claude/csharp-patterns.txt 2>/dev/null
+        ;;
+esac
+```
+
+STEP 5 - CREATE MANIFEST:
+```bash
+# Create manifest.json
+cat > claude/manifest.json << EOF
+{
+  "initialized": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+  "projectType": "$PROJECT_TYPE",
+  "frameworkVersion": "1.0.0",
+  "guidelines": {
+    "general-principles": "1.0.0",
+    "naming-conventions": "1.0.0",
+    "architecture-patterns": "1.0.0",
+    "project-templates": "1.0.0",
+    "common-solutions": "1.0.0"
+  }
+}
+EOF
+
+echo "✅ Created manifest.json"
+```
+
+STEP 6 - UPDATE GITIGNORE:
+```bash
+# Add to .gitignore if not present
+if [ -f ".gitignore" ]; then
+    if ! grep -q "^/claude/$" .gitignore; then
+        echo "" >> .gitignore
+        echo "# Bliss Framework guidelines (local)" >> .gitignore
+        echo "/claude/" >> .gitignore
+        echo "✅ Added /claude/ to .gitignore"
+    fi
+else
+    echo "/claude/" > .gitignore
+    echo "✅ Created .gitignore with /claude/"
+fi
+```
+
+STEP 7 - VERIFY & LOAD:
+```bash
+# List downloaded files
+echo "📁 Downloaded files:"
+ls -la claude/
+
+# Claude should now READ all files
+echo "📖 Reading guidelines into context..."
+for file in claude/*.txt; do
+    echo "Loading: $file"
+    # READ file content here
+done
+
+echo "✅ Initialization complete!"
+```
+
+=== USAGE ===
+
+USER COMMAND:
+"Initialize Bliss Framework guidelines for this project"
+
+CLAUDE RESPONSE:
+"I'll initialize the Bliss Framework guidelines for your project. Let me first check what type of project this is..."
+[Execute steps above]
+
+=== UPDATE WORKFLOW ===
+
+CHECK UPDATES:
+```bash
+# Fetch latest versions.json
+curl -s "$BASE_URL/versions.json" > /tmp/versions.json
+
+# Compare with local manifest
+# If newer versions available, prompt user
+echo "Updates available for:"
+echo "- general-principles: 1.0.0 -> 1.1.0"
+echo "Update now? (y/n)"
+```
+
+=== BENEFITS ===
+
+LOCAL STORAGE:
+- Offline access to guidelines
+- Faster loading (local files)
+- Version tracking per project
+- No network dependency after init
+
+PROJECT SPECIFIC:
+- Each project has its own guidelines
+- Can customize if needed
+- Clear initialization status
+- Easy to update or reset

@@ -87,3 +87,50 @@ When editing documentation:
 - Include real-world analogies (like the McDonald's restaurant example)
 - Maintain consistency with the framework's core principles
 - Use the established folder structure for new language-specific guidelines
+
+## Claude Guidelines Format Rules
+
+The Claude-specific guidelines (`/docs/claude/`) use a dual-format system:
+
+### Text Files (.txt) - For Claude Code
+- **Purpose**: Optimized for Claude Code to read and parse efficiently
+- **Format**: Bullet points, minimal prose, maximum information density
+- **Structure**:
+  ```
+  SECTION_NAME:
+  - key point 1
+  - key point 2
+  - NO: antipattern
+
+  GOOD: example1, example2
+  BAD: badexample1, badexample2
+  ```
+- **Location**: `/docs/claude/*.txt`
+
+### Markdown Files (.md) - For Human Reading
+- **Purpose**: Web visualization, human-friendly browsing
+- **Format**: Full markdown with formatting, sections, code blocks
+- **Features**: Syntax highlighting, tables, diagrams
+- **Location**: `/docs/claude/*.md`
+
+### Key Principles for Claude Guidelines
+1. **Bullet points over sentences** - Lists are more token-efficient
+2. **Examples over explanations** - Show don't tell
+3. **Patterns over theory** - Practical templates
+4. **Good/Bad comparisons** - Clear do's and don'ts
+5. **Minimal code snippets** - Only when essential
+
+### Example of Dual Format:
+```
+# Text file (general-principles.txt):
+COMMUNICATION:
+- user: Czech
+- code/docs: English
+- NO: mixing languages
+
+# Markdown file (general-principles.md):
+## Communication
+### Language Convention
+- **User communication**: Czech (čeština)
+- **Code and documentation**: English
+```

@@ -1,261 +1,196 @@
 BLISS FRAMEWORK - CLAUDE CODE NAMING CONVENTIONS
 Version: 1.0.0
-Last Modified: 2025-01-19T00:00:00Z
-Category: Core Guidelines
+Last Modified: 2025-01-19
 Priority: Critical
 
-Standardized naming patterns across all projects and technologies.
+=== CASING ===
 
-=== GENERAL RULES ===
+camelCase: variables, functions, methods
+PascalCase: classes, interfaces, components
+kebab-case: files, URLs, CSS
+SCREAMING_SNAKE: constants, env vars
+snake_case: database tables, columns
 
-Universal Principles:
-1. Descriptive over Short - getUserById() not getUser()
-2. No Abbreviations - userManager not usrMgr
-3. Consistent Language - All names in English
-4. No Magic Numbers - Use named constants
+=== FILES ===
 
-Casing Standards:
-- camelCase: Variables, functions, methods
-- PascalCase: Classes, interfaces, components, types
-- kebab-case: Files, URLs, CSS classes
-- SCREAMING_SNAKE_CASE: Constants, environment variables
-- snake_case: Database tables, columns
-
-=== FILES AND FOLDERS ===
-
-File Naming:
-✓ Good:
+GOOD:
 - user-provider.ts
 - order-manager.ts
-- payment-service.ts
 - user-profile.component.svelte
+- user.test.ts
 
-✗ Bad:
+BAD:
 - UserProvider.ts
 - orderMgr.ts
 - payment_service.ts
 
-Standard Folder Structure:
-src/
-├── providers/
-├── managers/
-├── io/
-├── models/
-├── mappers/
-├── helpers/
-├── constants/
-└── types/
+=== FUNCTIONS ===
 
-=== FUNCTIONS AND METHODS ===
+CRUD:
+- getUserById()
+- createUser()
+- updateUser()
+- deleteUser()
 
-CRUD Operations:
-- getUserById(id: string)
-- createUser(userData: CreateUserRequest)
-- updateUser(id: string, changes: UpdateUserRequest)
-- deleteUser(id: string)
+BOOLEAN:
+- isValid()
+- hasPermission()
+- canAccess()
 
-Boolean Functions:
-- isValid(data: unknown): boolean
-- hasPermission(user: User, action: string): boolean
-- canAccess(resource: Resource): boolean
+ASYNC:
+- fetchUsers()
+- saveData()
 
-Async Functions:
-- async fetchUsers(): Promise<User[]>
-- async saveUser(user: User): Promise<void>
-
-Validation:
-- validateEmail(email: string): ValidationResult
-- validatePassword(password: string): ValidationResult
-
-Transformation:
-- mapUserToDto(user: User): UserDto
-- parseUserInput(input: string): ParsedUser
-
-Function Categories:
-- get/fetch: Retrieve data (get = sync, fetch = async)
-- create/add: Create new entities
-- update/modify: Change existing entities
-- delete/remove: Remove entities
-- validate: Check data validity
-- parse: Convert data formats
-- map: Transform data structures
-- calculate: Perform computations
-- generate: Create derived data
+CATEGORIES:
+- get/fetch: retrieve (get=sync, fetch=async)
+- create/add: new entities
+- update/modify: change existing
+- delete/remove: delete entities
+- validate: check validity
+- parse: convert formats
+- map: transform structures
 
 === VARIABLES ===
 
-Descriptive Names:
-✓ Good:
-- const userAccountBalance = 150.50;
-- const isUserLoggedIn = checkAuth();
-- const maxRetryAttempts = 3;
+GOOD:
+- userAccountBalance
+- isUserLoggedIn
+- maxRetryAttempts
 
-✗ Bad:
-- const balance = 150.50;
-- const loggedIn = checkAuth();
-- const max = 3;
+BAD:
+- balance
+- loggedIn
+- max
 
-Collection Names:
-- const users = []; // plural
-- const userList = []; // explicit list
-- const activeUsers = []; // descriptive
+COLLECTIONS:
+- users[] (plural)
+- userList[]
+- userById (Map)
+- uniqueUserIds (Set)
 
-Maps/Objects:
-- const userById = new Map();
-- const configByEnvironment = {};
+=== CLASSES ===
 
-Sets:
-- const uniqueUserIds = new Set();
-- const visitedPages = new Set();
+SERVICES:
+- UserProvider
+- OrderManager
+- PaymentService
 
-=== CLASSES AND INTERFACES ===
+MODELS:
+- User
+- Order
+- Payment
 
-Classes:
-- class UserProvider {}
-- class OrderManager {}
-- class PaymentService {}
-- class User {}
-- class Order {}
-- class DateHelper {}
+HELPERS:
+- DateHelper
+- ValidationHelper
 
-Interfaces:
-- interface User {}
-- interface CreateUserRequest {}
-- interface UserResponse {}
-- interface UserProvider {}
-- interface PaymentGateway {}
-- interface DatabaseConfig {}
+=== DATABASE ===
 
-=== DATABASE NAMING ===
-
-Tables (singular, snake_case):
+TABLES:
 - users
 - user_accounts
 - order_items
-- payment_transactions
 
-Columns (snake_case):
+COLUMNS:
 - user_id
 - email_address
 - created_at
-- updated_at
 - is_active
-- account_balance
 
-Foreign keys (with table prefix):
-- user_id (references users.id)
-- order_id (references orders.id)
-
-Indexes (idx_table_column):
+INDEXES:
 - idx_users_email
-- idx_orders_user_id_created_at
-- idx_payments_status_date
+- idx_orders_user_id
 
-=== CONSTANTS AND ENUMS ===
+=== CONSTANTS ===
 
-Constants (SCREAMING_SNAKE_CASE):
-- const MAX_LOGIN_ATTEMPTS = 3;
-- const DEFAULT_PAGE_SIZE = 20;
-- const API_BASE_URL = 'https://api.example.com';
-- const ERROR_USER_NOT_FOUND = 'User not found';
+APP:
+- MAX_LOGIN_ATTEMPTS = 3
+- DEFAULT_PAGE_SIZE = 20
+- API_BASE_URL
 
-Enums (PascalCase with descriptive values):
+ERRORS:
+- ERROR_USER_NOT_FOUND
+- ERROR_INVALID_CREDENTIALS
+
+ENUMS:
+```
 enum UserStatus {
     Active = 'active',
-    Inactive = 'inactive',
-    Suspended = 'suspended'
+    Inactive = 'inactive'
 }
+```
 
-enum PaymentAction {
-    Charge = 'charge',
-    Refund = 'refund',
-    Authorize = 'authorize'
-}
+=== COMPONENTS ===
 
-=== COMPONENT NAMING ===
-
-Component Files (PascalCase.svelte):
+FILES:
 - UserProfile.svelte
 - OrderSummary.svelte
-- PaymentForm.svelte
-- UserDashboard.svelte
 
-Component Properties (camelCase):
-interface UserProfileProps {
-    userId: string;
-    showActions: boolean;
-    onUserUpdate: (user: User) => void;
-}
+PROPS:
+- userId: string
+- showActions: boolean
+- onUserUpdate: (user) => void
 
-=== API NAMING ===
+=== API ===
 
-RESTful Endpoints:
-- GET    /api/users           # Get all users
-- GET    /api/users/{id}      # Get specific user
-- POST   /api/users           # Create user
-- PUT    /api/users/{id}      # Update user
-- DELETE /api/users/{id}      # Delete user
+ENDPOINTS:
+- GET /api/users
+- GET /api/users/{id}
+- POST /api/users
+- PUT /api/users/{id}
+- DELETE /api/users/{id}
 
-Action Endpoints:
-- POST   /api/users/{id}/activate
-- POST   /api/orders/{id}/cancel
-- POST   /api/payments/{id}/refund
+ACTIONS:
+- POST /api/users/{id}/activate
+- POST /api/orders/{id}/cancel
 
-Request/Response Types:
-- interface CreateUserRequest {}
-- interface UpdateOrderRequest {}
-- interface UserResponse {}
-- interface OrderListResponse {}
+TYPES:
+- CreateUserRequest
+- UpdateOrderRequest
+- UserResponse
 
-=== ENVIRONMENT VARIABLES ===
+=== ENV VARS ===
 
-Naming Pattern (COMPONENT_PURPOSE_DETAIL):
+FORMAT: COMPONENT_PURPOSE_DETAIL
 - DATABASE_CONNECTION_STRING
 - API_BASE_URL
-- REDIS_CACHE_HOST
-- SMTP_SERVER_HOST
 - JWT_SECRET_KEY
 
-Environment Specific:
+ENVIRONMENT:
 - DEV_DATABASE_URL
 - PROD_DATABASE_URL
-- TEST_API_KEY
 
-=== TEST FILES ===
+=== TESTS ===
 
-Test File Names ([component].test.[ext]):
+FILES:
 - user-provider.test.ts
-- order-manager.test.ts
-- payment-service.test.ts
-- user-api.integration.test.ts
+- user.integration.test.ts
+- user.e2e.test.ts
 
-Test Function Names:
+DESCRIBE:
+```
 describe('UserProvider', () => {
     describe('getUserById', () => {
-        it('should return user when id exists', () => {});
-        it('should return null when id does not exist', () => {});
-        it('should throw error when id is invalid', () => {});
+        it('should return user when exists', () => {});
+        it('should return null when not exists', () => {});
     });
 });
+```
 
-=== ANTI-PATTERNS TO AVOID ===
+=== AVOID ===
 
-Bad Examples:
-✗ const data = fetchStuff(); // Too generic
-✗ const result = doThing(); // Too generic
-✗ const getUsersAsync(); // Not actually async
-✗ const user = getUsers(); // Returns array
-✗ const usrMgr = new UserManager(); // Abbreviations
-✗ const btnClk = handleClick; // Abbreviations
-✗ const user_id = 1; // Wrong casing context
-✗ const UserID = 2; // Inconsistent casing
+GENERIC:
+- data, result, thing
+- doStuff(), getData()
 
-Good Alternatives:
-✓ const userAccounts = fetchUserAccounts();
-✓ const validationResult = validateUserInput();
-✓ const getUsers(); // sync function
-✓ const fetchUsersAsync(); // async function
-✓ const userManager = new UserManager();
-✓ const handleButtonClick = handleClick;
-✓ const userId = 1;
-✓ const userAccountId = 2;
+MISLEADING:
+- getUsersAsync() (not async)
+- user = getUsers() (returns array)
+
+ABBREVIATIONS:
+- usrMgr, btnClk
+- usr, mgr, btn
+
+INCONSISTENT:
+- user_id (in JS)
+- UserID, userId, user_id (mixed)

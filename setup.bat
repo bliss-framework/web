@@ -1,1 +1,0 @@
-pip install mkdocs && pip install mkdocs-material && pip install mkdocs-glightbox mkdocs-git-revision-date-localized-plugin mkdocs-git-authors-plugin

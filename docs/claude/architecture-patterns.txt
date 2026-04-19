@@ -1,306 +1,271 @@
-BLISS FRAMEWORK - CLAUDE CODE ARCHITECTURE PATTERNS
+BLISS FRAMEWORK - CLAUDE CODE ARCHITECTURE
 Version: 1.0.0
-Last Modified: 2025-01-19T00:00:00Z
-Category: Core Guidelines
+Last Modified: 2025-01-19
 Priority: Critical
 
-Standardized architectural patterns and implementation guidelines for all projects.
+=== THREE LAYERS ===
 
-=== THREE-LAYER ARCHITECTURE ===
+FLOW:
+IO ← → Management ← → Provider
+            ↑
+        Side Layer
 
-Fundamental Pattern:
-IO Layer ← → Management Layer ← → Provider Layer
-                    ↑
-                Side Layer
-           (Models, Mappers, Helpers)
+IO LAYER:
+- external communication
+- validate input
+- format responses
+- auth/authorization
+- rate limiting
 
-Layer Responsibilities:
+MANAGEMENT:
+- ONLY when adds value
+- coordinate multiple providers
+- business rules/validation
+- transactions
+- NO: simple passthrough
+- NO: single provider wrapping
 
-IO Layer:
-- Handle external communication
-- Receive and validate input
-- Format and send responses
-- Handle authentication/authorization
-- Rate limiting and request logging
+PROVIDER:
+- specific tasks
+- database ops
+- API calls
+- file operations
+- trust input (pre-validated)
+- pass external data as-is
+- let errors crash/bubble
+- NO: calling other providers
+- NO: re-validation
+- NO: error hiding
 
-Management Layer:
-- Orchestrate business logic
-- Coordinate between providers
-- Implement business rules
-- Handle complex operations
-- Manage transactions
+SIDE LAYER:
+- models (data structures)
+- mappers (transformations)
+- helpers (utilities)
+- constants/enums
+- NO: dependencies on layers
 
-Provider Layer:
-- Perform specific tasks
-- Database operations
-- External API calls
-- File system operations
-- Cache management
+=== CRITICAL RULES ===
 
-Side Layer:
-- Support all layers with shared utilities
-- Models (data structures)
-- Mappers (data transformation)
-- Helpers (utility functions)
-- Constants and enums
+RULE 1: No provider-to-provider
+✗ UserProvider calls OrderProvider
+✓ Manager coordinates both
 
-=== CRITICAL ARCHITECTURE RULES ===
+RULE 2: Management only if adds value
+✗ Manager just wraps single provider
+✓ IO calls provider directly
+✓ Manager when multiple providers/logic
 
-Rule 1: No Provider-to-Provider Communication
-✗ WRONG: Providers calling each other
-✓ CORRECT: Manager orchestrates
+RULE 3: "Let it crash" philosophy
+- lower layers: trust input, NO re-validation
+- providers: pass data as-is from external
+- NO unnecessary mappers/models
+- errors: bubble up, NO hiding
+- log ONCE at top layer
 
-Rule 2: Providers Return Domain Models
-✗ WRONG: Returning raw database rows
-✓ CORRECT: Returning domain models
+RULE 4: Minimal transformation
+✗ create model for every external response
+✓ pass external data as-is when possible
+✓ transform only when necessary
 
-Rule 3: Error Handling at Layer Boundaries
-- Providers: Return null/throw specific errors
-- Managers: Return Result objects
-- IO Layer: Convert to HTTP responses
+RULE 5: Error boundaries
+- Provider: let it crash/throw
+- Manager: catch & Result<T> pattern
+- IO: catch & HTTP responses
+- Log ONCE at catch point
 
-=== IMPLEMENTATION EXAMPLES ===
+=== FOLDER STRUCTURE ===
 
-IO Layer Example (API Controller):
-```typescript
-export class UserController {
-    constructor(private userManager: UserManager) {}
-
-    async getUser(req: Request, res: Response) {
-        const { id } = this.validateGetUserRequest(req);
-        const result = await this.userManager.getUserById(id);
-
-        if (!result.success) {
-            return res.status(404).json({ error: result.error });
-        }
-
-        res.json(this.formatUserResponse(result.data));
-    }
-}
+FEATURE-BASED:
+```
+src/
+├── features/           # Domain-specific modules
+│   ├── users/
+│   │   ├── user-controller.ts
+│   │   ├── user-manager.ts
+│   │   ├── user-provider.ts
+│   │   ├── user-model.ts (if needed)
+│   │   └── user-routes.ts
+│   ├── orders/
+│   │   ├── order-controller.ts
+│   │   ├── order-manager.ts
+│   │   ├── order-provider.ts
+│   │   └── order-model.ts
+│   └── payments/
+│       ├── payment-controller.ts
+│       ├── payment-provider.ts
+│       └── payment-types.ts
+├── shared/            # Cross-feature utilities
+│   ├── authentication/
+│   ├── database/
+│   ├── helpers/
+│   ├── constants/
+│   └── types/
+└── app.ts
 ```
 
-Management Layer Example:
-```typescript
-export class UserManager {
-    constructor(
-        private userProvider: UserProvider,
-        private emailProvider: EmailProvider,
-        private auditProvider: AuditProvider
-    ) {}
+BENEFITS:
+- all related files together
+- easy to find domain logic
+- clear dependencies
+- simple to delete feature
+- shared code separated
 
-    async createUser(userData: CreateUserRequest): Promise<Result<User>> {
-        try {
-            const validation = this.validateUserData(userData);
-            if (!validation.success) {
-                return { success: false, error: validation.error };
-            }
+=== PATTERNS ===
 
-            const user = await this.userProvider.createUser(userData);
-            await this.emailProvider.sendWelcomeEmail(user.email);
-            await this.auditProvider.logUserCreation(user.id);
-
-            return { success: true, data: user };
-        } catch (error) {
-            return { success: false, error: error.message };
-        }
-    }
-}
+RESULT:
 ```
-
-Provider Layer Example:
-```typescript
-export class UserProvider {
-    constructor(private db: Database) {}
-
-    async getUserById(id: string): Promise<User | null> {
-        const row = await this.db.query(
-            'SELECT * FROM users WHERE id = $1',
-            [id]
-        );
-
-        return row ? this.mapRowToUser(row) : null;
-    }
-
-    async createUser(userData: CreateUserData): Promise<User> {
-        const row = await this.db.query(
-            'INSERT INTO users (email, name) VALUES ($1, $2) RETURNING *',
-            [userData.email, userData.name]
-        );
-
-        return this.mapRowToUser(row);
-    }
-}
-```
-
-=== COMMON PATTERNS ===
-
-Result Pattern:
-```typescript
-export interface Result<T> {
+interface Result<T> {
     success: boolean;
     data?: T;
     error?: string;
 }
+```
 
-// Usage
-const result = await userManager.createUser(userData);
-if (result.success) {
-    console.log(result.data);
-} else {
-    console.error(result.error);
+PROVIDER INTERFACE:
+```
+interface UserProvider {
+    getUserById(id): Promise<User | null>;
+    createUser(data): Promise<User>;
+    updateUser(id, data): Promise<User>;
+    deleteUser(id): Promise<void>;
 }
 ```
 
-Repository Pattern (for Providers):
-```typescript
-export interface UserProvider {
-    getUserById(id: string): Promise<User | null>;
-    createUser(userData: CreateUserData): Promise<User>;
-    updateUser(id: string, changes: Partial<User>): Promise<User>;
-    deleteUser(id: string): Promise<void>;
+"LET IT CRASH" EXAMPLES:
+```
+// ✓ GOOD - trust input, no re-validation
+async createUser(data) {
+    // assume data is valid from upper layer
+    return db.query('INSERT...', data);
+}
+
+// ✗ BAD - unnecessary re-validation
+async createUser(data) {
+    if (!data.email) throw Error(); // already validated!
+    if (!validateEmail(data.email)) throw Error(); // NO!
+    return db.query('INSERT...', data);
+}
+
+// ✓ GOOD - pass external data as-is
+async fetchGithubUser(id) {
+    const response = await fetch(`/users/${id}`);
+    return response.json(); // pass as-is
+}
+
+// ✗ BAD - unnecessary mapping
+async fetchGithubUser(id) {
+    const response = await fetch(`/users/${id}`);
+    const data = await response.json();
+    return new GithubUserModel(data); // unnecessary!
+}
+
+// ✓ GOOD - let it crash, log once at top
+// Controller:
+try {
+    const user = await provider.getUser(id);
+    res.json(user);
+} catch (error) {
+    logger.error(error); // log ONCE here
+    res.status(500).json({ error });
 }
 ```
 
-Factory Pattern:
-```typescript
-export class ServiceFactory {
-    static createUserService(config: Config): UserManager {
-        const userProvider = new DatabaseUserProvider(config.database);
-        const emailProvider = new EmailProvider(config.email);
-        const auditProvider = new AuditProvider(config.audit);
+WHEN TO USE MANAGER:
+```
+// ✓ GOOD - adds value (multiple providers)
+class UserManager {
+    async createUser(data): Result<User> {
+        const user = await userProvider.create(data);
+        await emailProvider.sendWelcome(user);
+        await auditProvider.log(user);
+        return { success: true, data: user };
+    }
+}
 
-        return new UserManager(userProvider, emailProvider, auditProvider);
+// ✗ BAD - no value (just wrapper)
+class UserManager {
+    async getUser(id): Result<User> {
+        return userProvider.getUserById(id);
+    }
+}
+
+// ✓ GOOD - IO calls provider directly
+class UserController {
+    async getUser(req, res) {
+        const user = await userProvider.getUserById(req.id);
+        res.json(user);
     }
 }
 ```
 
-=== PROJECT STRUCTURE TEMPLATE ===
+=== TECH ADAPTATIONS ===
 
-Standard Structure:
+SVELTEKIT:
+```
 src/
-├── io/                     # IO Layer
-│   ├── controllers/        # HTTP controllers
-│   ├── routes/            # Route definitions
-│   ├── middleware/        # Request middleware
-│   └── validators/        # Input validation
-│
-├── managers/              # Management Layer
-│   ├── user-manager.ts
-│   ├── order-manager.ts
-│   └── payment-manager.ts
-│
-├── providers/             # Provider Layer
-│   ├── database/
-│   │   ├── user-provider.ts
-│   │   └── order-provider.ts
-│   ├── external/
-│   │   ├── email-provider.ts
-│   │   └── payment-provider.ts
-│   └── file/
-│       └── storage-provider.ts
-│
-├── models/               # Side Layer - Data structures
-│   ├── user.ts
-│   ├── order.ts
-│   └── payment.ts
-│
-├── mappers/              # Side Layer - Data transformation
-│   ├── user-mapper.ts
-│   └── order-mapper.ts
-│
-├── helpers/              # Side Layer - Utilities
-│   ├── date-helper.ts
-│   ├── validation-helper.ts
-│   └── crypto-helper.ts
-│
-├── constants/            # Side Layer - Configuration
-│   ├── app-constants.ts
-│   └── error-messages.ts
-│
-└── types/               # Side Layer - Type definitions
-    ├── api-types.ts
-    └── database-types.ts
-
-=== TECHNOLOGY-SPECIFIC ADAPTATIONS ===
-
-SvelteKit Project:
-src/
-├── routes/               # SvelteKit routes (IO Layer)
+├── routes/            # SvelteKit routing
 ├── lib/
-│   ├── managers/
-│   ├── providers/
-│   ├── models/
-│   ├── mappers/
-│   ├── helpers/
-│   └── constants/
-└── app.html
+│   ├── features/
+│   │   ├── users/
+│   │   └── orders/
+│   └── shared/
+```
 
-Node.js/Express API:
+EXPRESS:
+```
 src/
-├── controllers/          # Express controllers (IO Layer)
-├── routes/              # Express routes (IO Layer)
-├── middleware/          # Express middleware (IO Layer)
-├── managers/            # Management Layer
-├── providers/           # Provider Layer
-├── models/              # Domain models
-├── mappers/             # Data transformation
-├── helpers/             # Utilities
-└── constants/           # Configuration
+├── features/
+│   ├── users/
+│   └── orders/
+├── shared/
+└── app.ts
+```
 
-C# Web API:
-ProjectName/
-├── Controllers/         # ASP.NET controllers (IO Layer)
-├── Managers/           # Management Layer
-├── Providers/          # Provider Layer
-├── Models/             # Domain models
-├── Mappers/            # Data transformation
-├── Helpers/            # Utilities
-└── Constants/          # Configuration
+C# WEB API:
+```
+Features/
+├── Users/
+│   ├── UsersController.cs
+│   ├── UserManager.cs
+│   └── UserProvider.cs
+├── Orders/
+└── Shared/
 
-=== TESTING ARCHITECTURE ===
+=== TESTING ===
 
-Test Structure Mirrors Code:
+STRUCTURE:
+```
 tests/
 ├── unit/
 │   ├── managers/
-│   ├── providers/
-│   ├── mappers/
-│   └── helpers/
-├── integration/
-│   ├── api/
-│   └── database/
-└── e2e/
-    └── user-flows/
-
-Testing Each Layer:
-- Provider tests: Unit with mocked database
-- Manager tests: Unit with mocked providers
-- Controller tests: Integration with real dependencies
-
-=== PERFORMANCE CONSIDERATIONS ===
-
-Database Optimization:
-- Use connection pooling
-- Implement query batching
-- Add proper indexes
-- Use transactions for multi-operation flows
-
-Caching Strategy:
-- Provider-level caching for external APIs
-- Manager-level caching for computed results
-- HTTP-level caching for static responses
-
-Async/Await Best Practices:
-✓ Good: Parallel execution when possible
-```typescript
-const [user, orders] = await Promise.all([
-    userProvider.getUserById(userId),
-    orderProvider.getOrdersByUserId(userId)
-]);
+│   └── providers/
+└── integration/
+    └── api/
 ```
 
-✗ Bad: Sequential when parallel is possible
-```typescript
-const user = await userProvider.getUserById(userId);
-const orders = await orderProvider.getOrdersByUserId(userId);
+APPROACH:
+- Provider: mock database
+- Manager: mock providers
+- Controller: integration
+
+=== PERFORMANCE ===
+
+DO:
+- connection pooling
+- query batching
+- proper indexes
+- transactions
+- parallel when possible
+
+DON'T:
+- N+1 queries
+- sequential if parallel works
+- sync blocking
+
+PARALLEL:
+```
+const [user, orders] = await Promise.all([
+    getUser(),
+    getOrders()
+]);
 ```

@@ -95,7 +95,21 @@ Each provider:
 - Handles its own errors
 - Is independently testable
 
-## Error Handling
+## Error Handling - "Let It Crash" Philosophy
+
+Following Erlang's "Let it crash" philosophy adapted for our architecture:
+
+### Core Principles
+1. **Fail fast, fail loud** - Better to crash immediately than hide errors
+2. **Trust your layers** - Lower layers trust input from upper layers
+3. **Minimal transformation** - Pass external data as-is when possible
+4. **Single logging point** - Log errors once at the catch point
+
+### Layer Responsibilities
+- **Lower layers**: Assume input is pre-validated, no re-validation
+- **Providers**: Pass external data as-is, no unnecessary mapping
+- **Errors**: Let them bubble up, don't hide or swallow
+- **Logging**: Log once at the top layer where caught
 
 ### Standard Approach
 ```typescript

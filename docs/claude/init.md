@@ -220,17 +220,32 @@ Claude Code should maintain this information in its working context:
 }
 ```
 
-## 🚀 Initialization Commands
+## 🚀 Initialization Workflow
 
-### For New Projects
+### Step 1: Project Detection & User Confirmation
+```bash
+# Claude Code should:
+1. Check if 'claude/' folder exists in project
+2. If exists, check versions and update if needed
+3. If not exists, proceed with initialization
+4. Detect project type or ASK user directly:
+   "What type of project is this? (sveltekit/express/csharp/etc.)"
+```
+
+### Step 2: Download Guidelines to Project
 ```bash
 # Claude Code should execute:
-# 1. Detect project technology stack
-# 2. Fetch version manifest and tech stack registry
-# 3. Load core guidelines in order
-# 4. Load tech-specific guidelines based on detected stack
-# 5. Store all version information and detection results
-# 6. Confirm initialization complete with summary
+# 1. Create 'claude/' folder in project root
+# 2. Download core guidelines:
+wget https://blissframework.dev/claude/general-principles.txt -O claude/general-principles.txt
+wget https://blissframework.dev/claude/naming-conventions.txt -O claude/naming-conventions.txt
+wget https://blissframework.dev/claude/architecture-patterns.txt -O claude/architecture-patterns.txt
+wget https://blissframework.dev/claude/project-templates.txt -O claude/project-templates.txt
+wget https://blissframework.dev/claude/common-solutions.txt -O claude/common-solutions.txt
+
+# 3. Download tech-specific guidelines based on detected stack
+# 4. Create claude/manifest.json with versions
+# 5. Read all downloaded files into context
 ```
 
 ### For Existing Projects
@@ -256,11 +271,50 @@ Claude Code should maintain this information in its working context:
 
 ## ⚠️ Important Instructions for Claude Code
 
-### During Initialization
-1. **Read Completely**: Load entire content of each guideline document
-2. **Process Sequentially**: Load guidelines in the order listed above
-3. **Verify Understanding**: Confirm comprehension of key concepts before proceeding
-4. **Store Metadata**: Save version and timestamp information for each loaded guideline
+### Initialization Process (MUST FOLLOW)
+1. **Check local claude/ folder**:
+   ```bash
+   ls claude/
+   # If exists: check manifest.json for versions
+   # If not exists: proceed to step 2
+   ```
+
+2. **Ask user about project type**:
+   ```
+   "I need to initialize Bliss Framework guidelines for this project.
+   What type of project is this?
+   1. SvelteKit
+   2. Node.js/Express
+   3. C# Web API
+   4. Other (specify)
+   Please answer with number or name:"
+   ```
+
+3. **Create local guidelines**:
+   ```bash
+   mkdir -p claude
+   # Download all core guidelines
+   curl -s https://blissframework.dev/claude/general-principles.txt > claude/general-principles.txt
+   curl -s https://blissframework.dev/claude/naming-conventions.txt > claude/naming-conventions.txt
+   curl -s https://blissframework.dev/claude/architecture-patterns.txt > claude/architecture-patterns.txt
+   # ... etc
+   ```
+
+4. **Create manifest**:
+   ```json
+   // claude/manifest.json
+   {
+     "initialized": "2025-01-19T14:30:00Z",
+     "projectType": "sveltekit",
+     "guidelines": {
+       "general-principles": "1.0.0",
+       "naming-conventions": "1.0.0"
+     }
+   }
+   ```
+
+5. **Load into context**: Read all downloaded files
+6. **Add to .gitignore**: Add `/claude/` to .gitignore
 
 ### During Regular Operation
 1. **Apply Guidelines**: Follow all loaded guidelines consistently
@@ -335,4 +389,42 @@ Ready for SvelteKit development with Bliss Framework patterns
 
 ---
 
-**Next Steps**: After reading this page, Claude Code should proceed to load all guidelines in the order specified above, starting with [General Principles](general-principles.md).
+## 📁 Expected Project Structure After Init
+
+```
+your-project/
+├── claude/                    # Local guidelines (git-ignored)
+│   ├── general-principles.txt
+│   ├── naming-conventions.txt
+│   ├── architecture-patterns.txt
+│   ├── project-templates.txt
+│   ├── common-solutions.txt
+│   └── manifest.json         # Version tracking
+├── src/
+├── package.json
+├── .gitignore                # Contains /claude/
+└── ...
+```
+
+## 🎯 Quick Start Command
+
+When user says: **"Initialize Bliss Framework"** or **"Go to blissframework.dev/claude/init"**
+
+Claude should respond:
+```
+I'll initialize the Bliss Framework guidelines for your project.
+
+First, let me check what type of project this is...
+[Check for svelte.config.js, package.json, *.csproj, etc.]
+
+[If unclear:]
+What type of project is this?
+1. SvelteKit
+2. Node.js/Express
+3. C# Web API
+4. Other
+
+[Then execute initialization workflow]
+```
+
+**Next Steps**: After initialization, Claude Code will have all guidelines locally in `claude/` folder and loaded into context.

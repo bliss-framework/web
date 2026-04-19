@@ -1,175 +1,172 @@
 BLISS FRAMEWORK - CLAUDE CODE GENERAL PRINCIPLES
 Version: 1.0.0
-Last Modified: 2025-01-19T00:00:00Z
-Category: Core Guidelines
+Last Modified: 2025-01-19
 Priority: Critical
-
-Core working principles for all projects developed with Claude Code.
 
 === COMMUNICATION ===
 
-Language Convention:
-- User communication: Czech (čeština)
-- Code and documentation: English
-- Comments in code: English
-- Git commits: English
+LANGUAGE:
+- user: Czech
+- code/docs: English
+- commits: English
+- NO: mixing languages
 
-Response Style:
-- Direct and concise
-- Focus on implementation over explanation
-- Show code first, explain if needed
-- No unnecessary preambles
+RESPONSE:
+- direct & concise
+- implementation > explanation
+- code first
+- NO: preambles, unnecessary text
 
-=== DEVELOPMENT WORKFLOW ===
+=== WORKFLOW ===
 
-1. Task Planning
-Always use TodoWrite tool for:
-- Tasks with 3+ steps
-- Complex implementations
-- Multiple file modifications
-- Bug fixing with investigation
+TODOWRITE TOOL:
+- tasks 3+ steps
+- complex implementations
+- multiple files
+- bug investigations
 
-2. Investigation First
-Before implementing:
-- Search existing codebase for patterns
-- Check dependencies and imports
-- Understand current architecture
-- Look for similar implementations
+INVESTIGATE FIRST:
+- search existing patterns
+- check dependencies
+- understand architecture
+- find similar code
 
-3. Follow Existing Patterns
-- Match code style in existing files
-- Use established libraries (don't introduce new ones)
-- Follow naming conventions
-- Maintain consistency over personal preference
+FOLLOW PATTERNS:
+- match existing style
+- use existing libraries
+- maintain consistency
+- NO: personal preference, new dependencies
 
 === CODE QUALITY ===
 
-Never Compromise On:
-1. Security: No hardcoded secrets, proper validation
-2. Type Safety: Full typing in TypeScript/C#
-3. Error Handling: Explicit error handling everywhere
-4. Testing: Write tests for critical logic
+NEVER COMPROMISE:
+- security: no hardcoded secrets
+- type safety: full typing
+- error handling: explicit everywhere
+- testing: critical logic
 
-Always Prefer:
-- Explicit over implicit
-- Readability over cleverness
-- Composition over inheritance
-- Pure functions over side effects
+ALWAYS:
+- explicit > implicit
+- readability > cleverness
+- composition > inheritance
+- pure functions > side effects
 
-=== FILE MANAGEMENT ===
+=== FILES ===
 
-Creation Rules:
-- NEVER create files unless absolutely necessary
-- ALWAYS prefer editing existing files
-- NEVER create documentation proactively
-- ONLY create what's explicitly requested
+CREATE:
+- ONLY when necessary
+- ONLY when requested
+- NO: proactive docs
+- NO: unnecessary files
 
-Modification Rules:
-- Understand context before editing
-- Preserve existing formatting
-- Keep changes minimal and focused
-- Don't refactor unrelated code
+MODIFY:
+- understand context first
+- preserve formatting
+- minimal changes
+- NO: unrelated refactoring
 
-=== ARCHITECTURE PRINCIPLES ===
+=== ARCHITECTURE ===
 
-Three-Layer Rule:
-IO Layer ← → Management Layer ← → Provider Layer
-                    ↑
-                Side Layer
-           (Models, Mappers, Helpers)
+THREE LAYERS:
+IO ← → Management ← → Provider
+            ↑
+        Side Layer
 
-Strict Rules:
-- Providers NEVER talk to each other
-- Management orchestrates all provider interaction
-- IO handles all external communication
-- Side layer has no dependencies on other layers
+RULES:
+- providers NEVER talk to each other
+- management orchestrates providers
+- IO handles external
+- side layer: no dependencies
 
-Provider Pattern:
-Each provider:
-- Has single responsibility
-- Returns domain models (not raw data)
-- Handles its own errors
-- Is independently testable
+PROVIDER:
+- single responsibility
+- return domain models
+- handle own errors
+- independently testable
 
-=== ERROR HANDLING ===
+=== ERRORS - "LET IT CRASH" ===
 
-Standard Approach:
-```typescript
+PHILOSOPHY:
+- fail fast, fail loud
+- crash > silent errors
+- fix immediately > find in logs later
+
+LAYERS:
+- lower layers: expect valid input, NO re-validation
+- providers: pass data as-is, NO unnecessary mapping
+- errors: bubble up, NO hiding/swallowing
+- logging: ONCE at top, NO double logging
+
+PATTERN (top level only):
+```
 try {
-    // Happy path
     return { success: true, data: result };
 } catch (error) {
-    // Explicit error handling
-    logger.error('Operation failed', error);
+    logger.error(error); // log ONCE
     return { success: false, error: error.message };
 }
 ```
 
-Never:
-- Swallow errors silently
-- Use generic error messages
-- Throw in providers (return error objects)
-- Log sensitive information
+NEVER:
+- validate already validated data
+- create unnecessary mappers/models
+- hide errors in lower layers
+- log same error multiple times
 
-=== GIT WORKFLOW ===
+=== GIT ===
 
-Commit Messages:
-Format: <type>: <description>
+COMMITS:
+- feat: new feature
+- fix: bug fix
+- refactor: restructuring
+- docs: documentation
+- test: testing
+- chore: maintenance
 
-Types:
-- feat: New feature
-- fix: Bug fix
-- refactor: Code restructuring
-- docs: Documentation
-- test: Testing
-- chore: Maintenance
+BRANCHES:
+- main/prod: production
+- feature/*: new features
+- fix/*: bug fixes
+- refactor/*: improvements
 
-Branch Strategy:
-- main/prod: Production code
-- feature/*: New features
-- fix/*: Bug fixes
-- refactor/*: Code improvements
+=== PERFORMANCE ===
 
-=== PERFORMANCE CONSIDERATIONS ===
+DO:
+- batch operations
+- pagination
+- caching
+- lazy loading
 
-Always:
-- Batch database operations
-- Use pagination for lists
-- Cache expensive computations
-- Lazy load when possible
-
-Never:
-- Premature optimization
+DON'T:
+- premature optimization
 - N+1 queries
-- Synchronous blocking operations
-- Memory leaks (cleanup subscriptions)
+- sync blocking
+- memory leaks
 
-=== TESTING PHILOSOPHY ===
+=== TESTING ===
 
-Test Priority:
-1. Critical business logic
-2. Data transformations
-3. Edge cases
-4. Integration points
+PRIORITY:
+1. business logic
+2. data transformations
+3. edge cases
+4. integrations
 
-Test Structure:
-```typescript
-describe('Component/Function', () => {
-    describe('method', () => {
-        it('should handle normal case', () => {});
-        it('should handle edge case', () => {});
-        it('should handle error case', () => {});
-    });
+STRUCTURE:
+```
+describe('Component', () => {
+    it('should handle normal', () => {});
+    it('should handle edge', () => {});
+    it('should handle error', () => {});
 });
 ```
 
-=== CODE REVIEW CHECKLIST ===
+=== CHECKLIST ===
 
-Before considering task complete:
-- [ ] Follows existing patterns
-- [ ] Has error handling
-- [ ] No hardcoded values
-- [ ] Tests pass
-- [ ] No console.logs
-- [ ] Types are complete
-- [ ] Names are descriptive
+BEFORE COMPLETE:
+- follows patterns
+- has error handling
+- no hardcoded values
+- tests pass
+- no console.logs
+- types complete
+- names descriptive

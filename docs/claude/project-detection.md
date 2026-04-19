@@ -271,7 +271,7 @@ Please select (1-3):
     "confidenceThreshold": 70,
     "fallbackToManual": true,
     "cacheDetection": true,
-    "registryUrl": "https://bliss-framework.org/claude/tech-stacks.json"
+    "registryUrl": "https://blissframework.dev/claude/tech-stacks.json"
   }
 }
 ```

@@ -111,12 +111,16 @@ export class UserController {
 ```
 
 #### Management Layer
-- **Purpose**: Orchestrate business logic
-- **Responsibilities**:
-  - Coordinate between providers
-  - Implement business rules
-  - Handle complex operations
-  - Manage transactions
+- **Purpose**: Orchestrate business logic (ONLY when adds value)
+- **When to use**:
+  - Coordinating multiple providers
+  - Complex business rules
+  - Transaction management
+  - Multi-step operations
+- **When NOT to use**:
+  - Simple passthrough to single provider
+  - No business logic added
+  - Direct CRUD operations (IO can call provider directly)
 
 ```typescript
 // Example: User Manager
@@ -234,7 +238,35 @@ export const USER_CONSTANTS = {
 
 ## Critical Architecture Rules
 
-### Rule 1: No Provider-to-Provider Communication
+### Rule 1: Management Layer Only When Adds Value
+```typescript
+// ❌ WRONG: Manager just wrapping single provider
+export class UserManager {
+    async getUserById(id: string): Promise<Result<User>> {
+        return this.userProvider.getUserById(id); // No value added!
+    }
+}
+
+// ✅ CORRECT: IO calls provider directly
+export class UserController {
+    async getUser(req: Request, res: Response) {
+        const user = await this.userProvider.getUserById(req.params.id);
+        res.json(user);
+    }
+}
+
+// ✅ CORRECT: Manager when coordinating multiple providers
+export class UserManager {
+    async createUser(userData: CreateUserRequest): Promise<Result<User>> {
+        const user = await this.userProvider.createUser(userData);
+        await this.emailProvider.sendWelcomeEmail(user.email);
+        await this.auditProvider.logUserCreation(user.id);
+        return { success: true, data: user };
+    }
+}
+```
+
+### Rule 2: No Provider-to-Provider Communication
 ```typescript
 // ❌ WRONG: Providers calling each other
 export class UserProvider {
@@ -259,7 +291,54 @@ export class UserManager {
 }
 ```
 
-### Rule 2: Providers Return Domain Models
+### Rule 3: "Let It Crash" Philosophy
+
+Following Erlang's philosophy - fail fast and loud:
+
+```typescript
+// ✅ CORRECT: Trust input from upper layers
+export class UserProvider {
+    async createUser(userData: CreateUserData): Promise<User> {
+        // No re-validation - trust management layer validated
+        const result = await this.db.query(
+            'INSERT INTO users (email, name) VALUES ($1, $2) RETURNING *',
+            [userData.email, userData.name]
+        );
+        return result.rows[0];
+    }
+}
+
+// ❌ WRONG: Re-validating already validated data
+export class UserProvider {
+    async createUser(userData: CreateUserData): Promise<User> {
+        // Unnecessary - already validated in upper layer!
+        if (!userData.email || !isValidEmail(userData.email)) {
+            throw new Error('Invalid email');
+        }
+        // ...
+    }
+}
+
+// ✅ CORRECT: Pass external data as-is
+export class GithubProvider {
+    async getUser(username: string) {
+        const response = await fetch(`https://api.github.com/users/${username}`);
+        return response.json(); // Return as-is, no unnecessary mapping
+    }
+}
+
+// ❌ WRONG: Creating unnecessary models
+export class GithubProvider {
+    async getUser(username: string) {
+        const response = await fetch(`https://api.github.com/users/${username}`);
+        const data = await response.json();
+        // Unnecessary transformation!
+        return new GithubUserModel(data);
+    }
+}
+```
+
+### Rule 4: Minimal Data Transformation
 ```typescript
 // ❌ WRONG: Returning raw database rows
 async getUserById(id: string): Promise<DatabaseRow> {
@@ -273,7 +352,7 @@ async getUserById(id: string): Promise<User | null> {
 }
 ```
 
-### Rule 3: Error Handling at Layer Boundaries
+### Rule 5: Error Handling at Layer Boundaries
 ```typescript
 // Providers: Return null/throw specific errors
 export class UserProvider {
@@ -369,52 +448,59 @@ export class ServiceFactory {
 
 ## Project Structure Template
 
-### Standard Folder Structure
+### Feature-Based Folder Structure (Recommended)
+
+The primary organizational pattern groups all related files by domain/feature:
+
 ```
 src/
-├── io/                     # IO Layer
-│   ├── controllers/        # HTTP controllers
-│   ├── routes/            # Route definitions
-│   ├── middleware/        # Request middleware
-│   └── validators/        # Input validation
+├── features/                    # Domain-specific modules
+│   ├── users/                  # User feature - all layers together
+│   │   ├── user-controller.ts  # IO Layer
+│   │   ├── user-routes.ts      # IO Layer
+│   │   ├── user-manager.ts     # Management Layer (if needed)
+│   │   ├── user-provider.ts    # Provider Layer
+│   │   ├── user-model.ts       # Domain model (if needed)
+│   │   ├── user-types.ts       # TypeScript types
+│   │   └── user.test.ts        # Tests
+│   │
+│   ├── orders/                 # Order feature
+│   │   ├── order-controller.ts
+│   │   ├── order-manager.ts    # Complex logic needs manager
+│   │   ├── order-provider.ts
+│   │   ├── order-model.ts
+│   │   └── order.test.ts
+│   │
+│   ├── payments/               # Payment feature
+│   │   ├── payment-controller.ts
+│   │   ├── payment-provider.ts # Simple CRUD, no manager needed
+│   │   ├── payment-types.ts
+│   │   └── payment.test.ts
+│   │
+│   └── notifications/          # Notification feature
+│       ├── notification-controller.ts
+│       ├── notification-manager.ts
+│       ├── email-provider.ts
+│       └── sms-provider.ts
 │
-├── managers/              # Management Layer
-│   ├── user-manager.ts
-│   ├── order-manager.ts
-│   └── payment-manager.ts
+├── shared/                     # Cross-feature utilities
+│   ├── authentication/        # Auth middleware, JWT handling
+│   ├── database/              # Database connection, base provider
+│   ├── helpers/               # Date, crypto, validation helpers
+│   ├── constants/             # App-wide constants
+│   ├── types/                 # Shared TypeScript types
+│   └── middleware/            # Common middleware
 │
-├── providers/             # Provider Layer
-│   ├── database/
-│   │   ├── user-provider.ts
-│   │   └── order-provider.ts
-│   ├── external/
-│   │   ├── email-provider.ts
-│   │   └── payment-provider.ts
-│   └── file/
-│       └── storage-provider.ts
-│
-├── models/               # Side Layer - Data structures
-│   ├── user.ts
-│   ├── order.ts
-│   └── payment.ts
-│
-├── mappers/              # Side Layer - Data transformation
-│   ├── user-mapper.ts
-│   └── order-mapper.ts
-│
-├── helpers/              # Side Layer - Utilities
-│   ├── date-helper.ts
-│   ├── validation-helper.ts
-│   └── crypto-helper.ts
-│
-├── constants/            # Side Layer - Configuration
-│   ├── app-constants.ts
-│   └── error-messages.ts
-│
-└── types/               # Side Layer - Type definitions
-    ├── api-types.ts
-    └── database-types.ts
+└── app.ts                      # Application entry point
 ```
+
+#### Benefits of Feature-Based Structure:
+- **Cohesion**: All related code in one place
+- **Discoverability**: Easy to find all code for a feature
+- **Isolation**: Clear boundaries between features
+- **Deletability**: Remove entire feature by deleting folder
+- **Scalability**: Easy to add new features
+- **Team work**: Different teams can own different features
 
 ### Technology-Specific Adaptations
 
@@ -422,57 +508,64 @@ src/
 ```
 src/
 ├── routes/               # SvelteKit routes (IO Layer)
+│   ├── api/             # API routes
+│   └── (app)/           # App pages
 ├── lib/
-│   ├── managers/
-│   ├── providers/
-│   ├── models/
-│   ├── mappers/
-│   ├── helpers/
-│   └── constants/
+│   ├── features/        # Domain features
+│   │   ├── users/
+│   │   └── orders/
+│   └── shared/          # Shared utilities
+│       ├── auth/
+│       └── helpers/
 └── app.html
 ```
 
 #### Node.js/Express API
 ```
 src/
-├── controllers/          # Express controllers (IO Layer)
-├── routes/              # Express routes (IO Layer)
-├── middleware/          # Express middleware (IO Layer)
-├── managers/            # Management Layer
-├── providers/           # Provider Layer
-├── models/              # Domain models
-├── mappers/             # Data transformation
-├── helpers/             # Utilities
-└── constants/           # Configuration
+├── features/            # Domain features
+│   ├── users/
+│   ├── orders/
+│   └── payments/
+├── shared/              # Shared code
+│   ├── auth/
+│   ├── database/
+│   └── middleware/
+└── app.ts
 ```
 
 #### C# Web API
 ```
 ProjectName/
-├── Controllers/         # ASP.NET controllers (IO Layer)
-├── Managers/           # Management Layer
-├── Providers/          # Provider Layer
-├── Models/             # Domain models
-├── Mappers/            # Data transformation
-├── Helpers/            # Utilities
-└── Constants/          # Configuration
+├── Features/           # Domain features
+│   ├── Users/
+│   │   ├── UsersController.cs
+│   │   ├── UserManager.cs
+│   │   └── UserProvider.cs
+│   └── Orders/
+├── Shared/             # Shared code
+│   ├── Authentication/
+│   └── Database/
+└── Program.cs
 ```
 
 ## Testing Architecture
 
 ### Test Structure Mirrors Code Structure
 ```
-tests/
-├── unit/
-│   ├── managers/
-│   ├── providers/
-│   ├── mappers/
-│   └── helpers/
+src/
+├── features/
+│   ├── users/
+│   │   ├── user-controller.ts
+│   │   ├── user-provider.ts
+│   │   └── user.test.ts        # Tests with feature
+│   └── orders/
+│       ├── order-controller.ts
+│       ├── order-manager.ts
+│       └── order.test.ts       # Tests with feature
+tests/                          # Only for E2E/integration
 ├── integration/
-│   ├── api/
-│   └── database/
 └── e2e/
-    └── user-flows/
 ```
 
 ### Testing Each Layer
