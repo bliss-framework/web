@@ -4,43 +4,41 @@ on:
   push:
     branches:
       - prod
+
 jobs:
   build:
-    name: Build and deploy image
+    name: Build and store image
     runs-on: self-hosted
     steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        repository: bliss-framework/web
-        token: ${{ secrets.GIT_SSH_KEY }}
-    - uses: docker/setup-buildx-action@v3
-    - uses: docker/login-action@v2
-      with:
-        registry: registry.km8.es
-        username: ${{ secrets.KEENMATE_REGISTRY_USERNAME }}
-        password: ${{ secrets.KEENMATE_REGISTRY_PASSWORD }}
-    - uses: docker/build-push-action@v5
-      with:
-        # context: ${{inputs.docker-build-context}}
-        context: .
-        file: ${{inputs.dockerfile-name}}
-        push: true
-        tags: |
-          registry.km8.es/bliss-framework-web:production
-        build-args: |
-          NPM_SCRIPT=build
-    - uses: appleboy/ssh-action@v0.1.5
-      with:
-        host: web-01.km8.vm
-        port: 22
-        username: ${{ secrets.BUILDER_SSH_USERNAME }}
-        key: ${{ secrets.BUILDER_SSH_KEY }}
-        passphrase: ${{ secrets.BUILDER_SSH_PASSPHRASE }}
-        script: |
-          cd /srv/docker/bliss-framework-web
-          docker-compose down
-          docker-compose pull
-          docker-compose up -d
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: registry.km8.es
+          username: ${{ secrets.KEENMATE_REGISTRY_USERNAME }}
+          password: ${{ secrets.KEENMATE_REGISTRY_PASSWORD }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: |
+            registry.km8.es/bliss-framework-web:production
 
-      
+  deploy:
+    name: Deploy image
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - uses: appleboy/ssh-action@v1
+        with:
+          host: web-01.km8.vm
+          port: 22
+          username: ${{ secrets.BUILDER_SSH_USERNAME }}
+          key: ${{ secrets.BUILDER_SSH_KEY }}
+          passphrase: ${{ secrets.BUILDER_SSH_PASSPHRASE }}
+          script: |
+            cd /srv/docker/bliss-framework-web
+            docker compose down
+            docker compose pull
+            docker compose up -d
