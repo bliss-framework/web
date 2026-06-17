@@ -59,6 +59,10 @@ nav:
     - coding-guidelines-postgres/index.md
     - Naming conventions: coding-guidelines-postgres/naming-conventions.md
 
+  - JavaScript / web-component guidelines:
+    - coding-guidelines-javascript/index.md
+    - Naming conventions: coding-guidelines-javascript/naming-conventions.md
+
   - Claude Code:
     - claude/index.md
     - Initialize: claude/init.md

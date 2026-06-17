@@ -40,6 +40,7 @@ This is a list of standard verbs we use to describe an action:
 - Search - search functions return object(s) based on criteria and paging settings (page size, page number)
 - Process - process functions are used for mass processing of data, for example, when you import data to a _stage_ table and then run a function that process them to final data stored in _public_ table
 - Map - map functions are used for mapping objects from one type to another, generally speaking, for data transformations
+- Check - check functions inspect current state and return a verdict, either a boolean or a small detail object. They are read-only — no mutation, no side effects. Examples: _CheckValidity_, _CheckOverflow_, _CheckPermission_, _CheckIfStale_
 
 There are also some specific verbs we use to describe specific actions:
 
@@ -47,6 +48,20 @@ There are also some specific verbs we use to describe specific actions:
 - Parse - parse functions parse input data, usually, CSV files, Excel sheets, text files, and others
 - (Bulk)Copy - copy functions are special functions that, usually, copy data in big chunks to database with _COPY_ command
 - Send - send methods are used for actions related to email, SMS or other notification service, for example, _SendEmail_, _SendNotification_, and so on
+
+### Check vs Validate vs Verify vs Is/Has/Can
+
+These four shapes are easy to confuse but each has its own job:
+
+| Verb | Returns | Mutation? | Used for |
+|------|---------|-----------|----------|
+| _Is_/_Has_/_Can_/_Should_ + noun | boolean | No | Pure predicates that read like properties: _IsActive_, _HasPermission_, _CanEdit_, _ShouldRetry_ |
+| _Check_ + noun | boolean or detail object | No | Inspect current state, return a verdict: _CheckValidity_, _CheckOverflow_ |
+| _Validate_ + noun | throws / result / errors[] | No (or normalization only) | Gate input at a boundary, e.g. an I/O layer: _ValidateUserInput_, _ValidateOrder_ |
+| _Verify_ + noun | throws / boolean | No | Assert a postcondition or check a claim made elsewhere: _VerifySignature_, _VerifyPanelLanded_ |
+| _Ensure_ + noun | the thing | **Yes** — creates if missing | Idempotent upsert: _EnsureDirectory_, _EnsureRow_ |
+
+When a UI library inspects DOM state and needs to report whether something is in the expected configuration, _Check_ is the right verb. When an I/O layer rejects malformed input, _Validate_ is the right verb. Don't use one where the other fits.
 
 ## Name structure
 
@@ -76,5 +91,6 @@ There are language/framework specific naming conventions for every language/fram
 - [__Elixir__](../coding-guidelines-elixir/naming-conventions.md)
 - [__PostgreSQL__](../coding-guidelines-postgres/naming-conventions.md)
 - [__Svelte.dev__](../coding-guidelines-svelte/naming-conventions.md)
+- [__JavaScript / web-components__](../coding-guidelines-javascript/naming-conventions.md)
 
 </div>

@@ -46,9 +46,20 @@ CATEGORIES:
 - create/add: new entities
 - update/modify: change existing
 - delete/remove: delete entities
-- validate: check validity
+- check: inspect state, return verdict (bool or detail). NO mutation. read-only.
+- validate: gate input at boundary. throws/Result. e.g. ValidateUserInput
+- verify: assert postcondition / check claim. e.g. VerifySignature
+- ensure: idempotent upsert. creates if missing. e.g. EnsureDirectory
 - parse: convert formats
 - map: transform structures
+
+CHECK vs VALIDATE vs VERIFY:
+- check: peek at current state, return verdict
+- validate: assert input at I/O boundary, throw or Result<T>
+- verify: assert postcondition, e.g. "panel landed where Floating UI said it would"
+- is/has/can/should: pure boolean predicates that read like properties
+- ensure: idempotent upsert (HAS side effects)
+NO: using validate where check fits (no boundary), or check where is/has fits (just a property)
 
 === VARIABLES ===
 

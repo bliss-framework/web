@@ -85,7 +85,10 @@ parseUserInput(input: string): ParsedUser
 - **create/add**: Create new entities
 - **update/modify**: Change existing entities
 - **delete/remove**: Remove entities
-- **validate**: Check data validity
+- **check**: Inspect current state, return verdict (boolean or detail). Read-only, no mutation. Distinct from _validate_, _verify_, and _is/has/can_ predicates
+- **validate**: Gate input at a boundary — assert input shape, throw or return errors
+- **verify**: Assert a postcondition or check a claim made elsewhere
+- **ensure**: Idempotent upsert — create if missing, return the thing
 - **parse**: Convert data formats
 - **map**: Transform data structures
 - **calculate**: Perform computations
