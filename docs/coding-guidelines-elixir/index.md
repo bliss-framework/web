@@ -84,6 +84,35 @@ lib/
 
 `MyAppWeb.*` may call `MyApp.*` freely, but **never** the reverse — the business app must not know there is an HTTP layer above it. The only exception is a few `MyAppWeb.*Helpers` (e.g. `GeoHelpers`) that contain pure transformations and are aliased by contexts; treat those as Side layer, not as I/O.
 
+## Impureim sandwich in Elixir
+
+The layer rules below are not arbitrary folder hygiene — they are how Bliss applies the [Impureim Sandwich](../learning-guidelines/functional-vs-OOP-programming.md#impureim-sandwich-principal) (functional core, imperative shell) in an Elixir codebase. Read that section first; everything here is the Elixir-specific mapping of it. The general [coding guidelines](../coding-guidelines/index.md) call it "the main principle of our code structure" — it is, in Elixir too.
+
+The principle: **push every side effect to the top and bottom of a call; keep everything in between pure.** Impure code (I/O, DB, HTTP, time, randomness, logging) lives in a thin shell at the edges; the core that transforms data is pure — same input, same output, no side effects, trivially testable. In Elixir that maps onto the modules you already have:
+
+| Sandwich part | Pure / impure | Elixir modules |
+|---------------|---------------|----------------|
+| **Top of the shell** (I/O in) | Impure | `MyAppWeb.*Controller`, `MyAppWeb.Plugs.*` — read the request, build `ctx` |
+| **Bottom of the shell** (I/O out) | Impure | **Providers**: `Database.DbContext`, `MyApp.<Subject>.GraphApi`, `MyApp.Communications.Mailer`, a `TwilioProvider` — anything that *physically* talks to the outside world |
+| **The pure core** | Pure | `<Subject>Mapper`, `Helpers.*`, `Models.*`, the data-shaping inside the context — no `ctx`-driven I/O, no DB, no logger |
+| **The seam that holds it together** | Impure orchestration only | `MyApp.<Subject>` context — calls the impure providers, branches on the result, hands the data to the pure core |
+
+The load-bearing consequence — and the one a mechanical reading of "contexts orchestrate providers" misses:
+
+!!! warning "If it physically calls an external service, it is a Provider"
+
+    A call that crosses the process boundary — an SMS send through Twilio, a SQL query, a mail send, a Redis `GET` — is **impure** and belongs in its own provider module (`TwilioProvider`, `GraphApi`, `DbContext`, `Mailer`), never inlined into a context, a mapper, or a helper. "Twilio communication" means a `TwilioProvider` whose only job is the wire call, returning `{:ok, value}` / `{:error, reason}`. The context orchestrates it; the mapper shapes its result; the controller binds it to HTTP. The impurity stays sandwiched at the bottom edge — it does not leak into the core.
+
+### What this buys you
+
+Keeping the impurity isolated at the edges is not theory — it pays off the moment you test or reuse the code:
+
+- **The Management layer becomes unit-testable in isolation.** Because a context calls providers through a known contract (`{:ok, value}` / `{:error, reason}`), you can test it with **stub providers** — a fake `TwilioProvider` returning canned responses, a fake `DbContext` recording the calls it received — and assert on the orchestration and mapping logic *without* spinning up Postgres, an HTTP server, or a job queue. When the wire call is welded into the context, every test has to stand up the real infrastructure; once it's a provider, the test injects a double. (Introduce a `Behaviour` for the provider only when you actually need the mock contract — see [Behaviour and protocol naming](./naming-conventions.md#behaviour-and-protocol-naming).)
+- **The same Management path runs from any I/O shell.** Because the context knows nothing about *how* it was invoked, the same business call can be driven from a `MyAppWeb` controller, an [Oban](https://hexdocs.pm/oban/) worker, a `Mix` task, or a scheduled job — each is just a different top-of-the-shell entry point building a `ctx` and calling the same context function. A `mix my_app.send_reminder --user-id 123` that calls `Notifications.send_reminder(ctx, 123)` directly is zero extra work; if the orchestration lived inside the worker, you'd have to copy half of it to reuse it.
+- **"Where does Twilio get called?" has exactly one answer** — `TwilioProvider`. One place to add retries, a timeout, a circuit breaker, or a test double; one place to look when the external service changes.
+
+This is *why* the rules in the next section exist: thin controllers (don't fatten the top of the shell), one provider per external system (keep the bottom of the shell isolated and replaceable), mappers with no I/O (protect the pure core), and "providers don't talk to providers" (the core, not another shell, does the composing). When the layering looks like bureaucracy, this is the principle it is serving.
+
 ## Layering, in Elixir terms
 
 The three-layer Bliss model expressed as Elixir modules:

@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), but because this is a docs site with no versioned releases, entries are grouped by date instead of by release version. Newest date on top. Within a date block, group by change type (`Added` / `Changed` / `Fixed` / `Removed`).
 
+## [2026-06-24]
+
+### Added
+
+- **Impureim sandwich in Elixir**: added an "Impureim sandwich in Elixir" subsection to `coding-guidelines-elixir/index.md` (before "Layering, in Elixir terms"). The existing Elixir guidelines taught the layer *mechanics* (two-OTP-app split, controllers → contexts → providers, "providers don't talk to providers") but never named the *principle* behind them, so a mechanical reading led downstream work to inline external-service calls instead of isolating them. The new subsection cross-links the [Impureim Sandwich](../learning-guidelines/functional-vs-OOP-programming.md#impureim-sandwich-principal) explanation, maps the sandwich onto Elixir modules (impure shell = controllers + providers like `DbContext` / `GraphApi` / `Mailer` / `TwilioProvider`; pure core = mappers / `Helpers.*` / `Models.*`; the context as the impure-orchestration seam), and adds a warning admonition — "if it physically calls an external service, it is a Provider" — using the `TwilioProvider` example to make the rule concrete. A "What this buys you" subsection spells out the payoff: the Management layer becomes unit-testable in isolation via stub/fake providers (no Postgres / HTTP / job-queue spin-up), the same context path can be driven from any I/O shell (controller, Oban worker, `Mix` task, scheduled job) because the context is invocation-agnostic, and external calls live in exactly one place. Frames the next section's rules (thin controllers, one provider per external system, mappers with no I/O, providers-don't-call-providers) as consequences of the principle rather than arbitrary hygiene.
+
 ## [2026-06-21]
 
 ### Added
