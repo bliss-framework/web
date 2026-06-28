@@ -165,62 +165,69 @@ The pattern:
 
 ## Callback vs event handler vs listener
 
-The KeenMate libraries use a deliberate naming hierarchy across **six** shapes — four consumer-facing, two internal. Each carries information about the role the function plays:
+The KeenMate libraries use a deliberate naming hierarchy across **six** shapes — four consumer-facing, two internal. The primary seam is **not** the host framework — it's one semantic question:
 
-| Shape | Suffix / pattern | Where it lives | Example | Returns? |
-|-------|------------------|----------------|---------|----------|
-| Consumer-facing fire-and-forget notification | `on*` | Svelte component prop OR config field | `onNodeClick`, `onSelectionChange`, `onClick` (on `ActionButton`) | `void` |
-| Consumer-facing notification (config-object world) | `*Callback` | Field on a plain JS `Config` interface | `selectCallback`, `changeCallback`, `deselectCallback` | `void` |
-| Consumer-facing interceptor — can modify or cancel an action | `before*Callback` | Field on `Config` / Svelte props | `beforeDropCallback`, `beforeCheckboxToggleCallback`, `beforePasteCallback` | `false` to cancel, modified args to override, `void` to proceed |
-| Consumer-facing data / behavior provider | `get*Callback` or plain `*Callback` | Field on `Config` / Svelte props | `getDisplayValueCallback`, `getIsExpandedCallback`, `sortCallback`, `initializeIndexCallback`, `renderOptionContentCallback` | The data or the behavior result |
-| Internal DOM event handler method | `handle*` | Private method on the logic class | `handleKeydown(e)`, `handleClickOutside(e)`, `handleDropdownClick(e)` | `void` |
-| Stored reference to a consumer callback OR a registered DOM listener | `*Handler` (stored field) | Field on the logic class | `onNodeClickHandler`, `documentKeydownHandler` | n/a — held for later invocation / removal |
+> **Does the component use the function's return value?**
+>
+> - **No — the return is ignored (fire-and-forget).** The function is an **event**: the component announces that something happened and walks away. Name it `on*` (a Svelte prop or a JS config field) and/or dispatch a bare `CustomEvent`.
+> - **Yes — the component consumes what the function returns.** The function is a **callback**: the component asks a question and uses the answer. The `Callback` suffix is reserved for these.
 
-The interesting choice is among the four **consumer-facing** shapes. The internal halves (`handle*` for methods, `*Handler` for stored references) are unambiguous and apply identically across all components.
+The `Callback` suffix means *"I call you back for an answer and use it."* A void-returning notification — even one sitting on a JS `Config` interface — is an **event**, named `on*`, never `*Callback`.
+
+| Shape | Suffix / pattern | Return used? | Where it lives | Example |
+|-------|------------------|--------------|----------------|---------|
+| Event / notification | `on*` (field) and/or bare `CustomEvent` (DOM) | **No** — fire-and-forget | Svelte prop, JS config field, custom-element DOM | `onSelect`, `onChange`, `onClick`; `'select'` / `'change'` `CustomEvent`s |
+| Interceptor — modify or cancel an action | `before*Callback` | **Yes** — `false` to cancel, modified args to override | Field on `Config` / Svelte props | `beforeDropCallback`, `beforeCheckboxToggleCallback`, `beforePasteCallback` |
+| Data extractor | `get*Callback` (+ `*Member`) | **Yes** — the value | Field on `Config` / Svelte props | `getDisplayValueCallback`, `getIsExpandedCallback` |
+| Behavior provider | plain `*Callback` | **Yes** — the behavior result | Field on `Config` / Svelte props | `sortCallback`, `initializeIndexCallback`, `renderOptionContentCallback` |
+| Internal DOM event handler method | `handle*` | n/a (internal method) | Private method on the logic class | `handleKeydown(e)`, `handleClickOutside(e)`, `handleDropdownClick(e)` |
+| Stored reference to a consumer fn OR a registered DOM listener | `*Handler` (stored field) | n/a — held for later | Field on the logic class | `onSelectHandler`, `documentKeydownHandler` |
+
+The internal halves (`handle*` for methods, `*Handler` for stored references) are unambiguous and apply identically across all components.
 
 ### Picking among the four consumer-facing shapes
 
-The hierarchy is driven by two independent questions: **what is the function's job** (notification vs interceptor vs data vs behavior), and — for notifications only — **what is the host framework** (Svelte component vs config object).
+One question decides callback-vs-event; a refinement picks the callback kind. The host framework only decides *where an event's field lives* — it never turns an event into a callback.
 
 ```mermaid
 flowchart TD
-    A[Consumer-supplied function] --> B{Job?}
-    B -->|"Tell me when X happened"| C[Notification]
-    B -->|"Check before X happens, let me cancel/modify"| D[before*Callback]
-    B -->|"Tell me the value of Y for this item"| E[get*Callback]
-    B -->|"Customize how Z works (sort, render, init)"| F["*Callback (plain)"]
-    C --> G{Where does it live?}
-    G -->|"Svelte component prop"| H["on*"]
-    G -->|"Field on a JS Config object"| I["*Callback"]
-    G -->|"Custom-element public DOM API"| J["CustomEvent + addEventListener<br/>(no prop name at all)"]
+    A[Consumer-supplied function] --> B{Does the component use the return value?}
+    B -->|"No — fire-and-forget"| C[Event]
+    B -->|"Yes — cancel/modify before X"| D[before*Callback]
+    B -->|"Yes — value of Y for this item"| E[get*Callback]
+    B -->|"Yes — custom behavior (sort, render, init)"| F["*Callback (plain)"]
+    C --> G{Subscription surface?}
+    G -->|"Svelte component prop"| H["on* prop"]
+    G -->|"Field on a JS Config object"| I["on* field"]
+    G -->|"Custom-element public DOM API"| J["bare CustomEvent + addEventListener"]
 ```
 
 In words:
 
-| Job | Pattern | KeenMate examples |
-|-----|---------|-------------------|
-| **Notification** — "tell me when X happened, I don't need to influence anything" | `on*` for Svelte components; `*Callback` for plain JS config objects; bare `CustomEvent` name for custom-element DOM API | `onNodeClick` (treeview Svelte prop), `selectCallback` (multiselect config), `'select'` (multiselect CustomEvent) |
-| **Interceptor** — "let me see X before it happens and possibly cancel or modify it" | `before*Callback`, regardless of host framework | `beforeDropCallback`, `beforeCopyCallback`, `beforeCheckboxToggleCallback` |
-| **Data provider** — "tell me the value of Y for this data item, paired with a `*Member` string shortcut" | `get*Callback`, regardless of host framework | `getDisplayValueCallback` + `displayValueMember`, `getIsExpandedCallback` + `isExpandedMember`, `getValueCallback` + `valueMember` |
-| **Behavior provider** — "use this function instead of my default behavior" | `*Callback` plain, regardless of host framework | `sortCallback`, `initializeIndexCallback`, `renderOptionContentCallback`, `customStylesCallback` |
+| Job | Return used? | Pattern | KeenMate examples |
+|-----|--------------|---------|-------------------|
+| **Event / notification** — "tell me when X happened, I won't influence anything" | No | `on*` field (Svelte prop *or* JS config field) and/or bare `CustomEvent` for the DOM API | `onNodeClick` (treeview Svelte prop), `onSelect` (multiselect config), `'select'` (multiselect CustomEvent) |
+| **Interceptor** — "let me see X before it happens and possibly cancel or modify it" | Yes | `before*Callback`, regardless of host framework | `beforeDropCallback`, `beforeCopyCallback`, `beforeCheckboxToggleCallback` |
+| **Data provider** — "tell me the value of Y for this data item, paired with a `*Member` string shortcut" | Yes | `get*Callback`, regardless of host framework | `getDisplayValueCallback` + `displayValueMember`, `getIsExpandedCallback` + `isExpandedMember`, `getValueCallback` + `valueMember` |
+| **Behavior provider** — "use this function instead of my default behavior" | Yes | `*Callback` plain, regardless of host framework | `sortCallback`, `initializeIndexCallback`, `renderOptionContentCallback`, `customStylesCallback` |
 
-The interceptor / data-provider / behavior-provider patterns are **the same in both worlds**, because they all need return values — events can't carry a return value, so there's no Svelte-`on*` form for them.
+The interceptor / data-provider / behavior-provider patterns are **the same in both worlds**, because they all consume a return value — that's what makes them callbacks. An event can't carry a meaningful return value, so it's always `on*` / `CustomEvent`, never `*Callback`.
 
-### Why notifications split by host framework
+### Why events still vary by host framework (but never become callbacks)
 
-The split exists because **the host framework dictates how a consumer subscribes**:
+An event's *spelling stays `on*`*; the host framework only dictates **which fields exist and whether a `CustomEvent` also fires**:
 
 - **Svelte component** (e.g. `svelte-treeview`): consumed as `<Tree onNodeClick={handler} />`. In Svelte 5 runes, every prop is a function field on the component; `on*` matches Svelte's own conventions (Svelte 4's `on:nodeclick` directive collapsed to `onNodeClick` prop in Svelte 5).
-- **Plain JS config object** (e.g. `web-multiselect`'s `MultiSelectConfig`): consumed as `new WebMultiSelect(el, { selectCallback: handler })`. No event system at the config level; everything is a field; `Callback` suffix marks it as "consumer-supplied, optional".
-- **Custom-element DOM API** (e.g. `<web-multiselect>` in any framework): consumed as `el.addEventListener('select', handler)`. The event name is a bare string and follows the HTML standard for built-in event names (`click`, `change`, `select`, `input`, …). No prop name exists at all; nothing is named `on*` in this surface.
+- **Plain JS config object** (e.g. `web-multiselect`'s `MultiSelectConfig`): consumed as `new WebMultiSelect(el, { onSelect: handler })`. The field is an event too — its return is ignored — so it's `on*`, not `*Callback`. (Historically these were `selectCallback` etc.; that spelling mislabelled an event as a callback and is deprecated.)
+- **Custom-element DOM API** (e.g. `<web-multiselect>` in any framework): consumed as `el.addEventListener('select', handler)`. The event name is a bare string and follows the HTML standard for built-in event names (`click`, `change`, `select`, `input`, …). The `on*` form is the *field* spelling for the same event, never the `CustomEvent` string.
 
 ### The "parallel APIs" pattern for web-components
 
-A reusable web-component often exposes the **same** notification two ways: as a `CustomEvent` and as a `*Callback` field in its config. The component should fire both:
+A reusable web-component often exposes the **same** event two ways: as a `CustomEvent` and as an `on*` field in its config. The component should fire both:
 
 ```typescript
 // Inside the component, after the user picks an option:
-this.options.selectCallback?.(item);          // config-side: callback (if provided)
+this.options.onSelect?.(item);                // config-side: on* field (if provided)
 this.element.dispatchEvent(                   // DOM-side: event (always)
     new CustomEvent('select', { detail: { item } })
 );
@@ -228,10 +235,10 @@ this.element.dispatchEvent(                   // DOM-side: event (always)
 
 Why offer both?
 
-- A JS consumer who already holds the instance prefers the `selectCallback` field — it's right there in the config, no `addEventListener` plumbing.
+- A JS consumer who already holds the instance prefers the `onSelect` field — it's right there in the config, no `addEventListener` plumbing.
 - A declarative HTML / Svelte / React consumer prefers the `CustomEvent` because their framework knows how to bind it (`<web-multiselect on:select={handler} />` in Svelte 4, `el.addEventListener('select', …)` in plain HTML/JS).
 
-The reference implementation does this: `@keenmate/web-multiselect` accepts `selectCallback`, `deselectCallback`, `changeCallback` in its config **and** dispatches `'select'`, `'deselect'`, `'change'` `CustomEvent`s on the host element. Both work, both are documented, both are tested.
+Both are fire-and-forget — neither return value is read — which is why both wear the `on*` / bare-event spelling rather than `*Callback`. The reference implementation does this: `@keenmate/web-multiselect` accepts `onSelect`, `onDeselect`, `onChange` in its config **and** dispatches `'select'`, `'deselect'`, `'change'` `CustomEvent`s on the host element. Both work, both are documented, both are tested.
 
 Svelte components like `@keenmate/svelte-treeview` don't need this duality — they expose `onNodeClick` as a Svelte prop, and the framework handles subscription. No `CustomEvent` is dispatched.
 
@@ -239,14 +246,14 @@ Svelte components like `@keenmate/svelte-treeview` don't need this duality — t
 
 If you're unsure which suffix to use, ask in this order:
 
-1. **Does my function need to return something the component uses?** → not a notification:
-   - "before this action" → `before*Callback`
+1. **Does the component use what my function returns?** → it's a **callback**:
+   - "before this action, let me cancel/modify" → `before*Callback`
    - "data for this item" → `get*Callback`
    - "custom behavior" → `*Callback` plain
-2. **No return value — it's a notification. What's the host shape?**
-   - Svelte component → `on*`
-   - Plain JS config object → `*Callback`
-   - Custom-element DOM surface → no prop name; dispatch a bare `CustomEvent`
+2. **No — the return is ignored — it's an event.** Spell it `on*`; the surface only decides where the field lives:
+   - Svelte component → `on*` prop
+   - Plain JS config object → `on*` field
+   - Custom-element DOM surface → dispatch a bare `CustomEvent` (the `on*` field is its config twin)
 
 The internal halves (`handle*` for methods, `*Handler` for stored references) are unambiguous: bind a method? `handle*`. Hold a registered handler reference for later removal or invocation? `*Handler`.
 
@@ -305,9 +312,9 @@ The canonical source on CSS structure, theming, BEM enforcement, and the `--base
 | `MultiSelect` and `WebMultiSelect` and `MultiSelectElement` used interchangeably | Vocabulary drift | Settle on the trio: `WebMultiSelect` (logic) + `MultiSelectElement` (custom element) + `<web-multiselect>` (tag). Pick once, don't drift. |
 | Bare `options` for both config and items | Vocabulary collision | `config` for the component's settings, `options` (or `items`) for the selectable list — never both |
 | `onSelect`, `selectEvent`, `select-event` as a `CustomEvent` name | Decoration. CustomEvent names follow HTML standard — bare, short. | `'select'` |
-| `*Callback` for an internal handler | Wrong surface — `Callback` implies "supplied by consumer" | `handle*` for internal methods; reserve `*Callback` for config-provided functions |
+| `*Callback` for an internal handler | Wrong surface — `Callback` implies "supplied by consumer" | `handle*` for internal methods; reserve `*Callback` for consumer-supplied functions whose return the component uses |
 | `on*` used for a function that **returns** something the component uses | `on*` implies fire-and-forget — readers will skip the return value | Pick the right verb: `before*Callback` (interceptor), `get*Callback` (data), or plain `*Callback` (behavior) |
-| `*Callback` notification field on a Svelte component prop | Doesn't match Svelte idiom — readers expect `on*` | Rename to `on*` for Svelte components, keep `*Callback` for plain JS config objects |
+| `*Callback` for a fire-and-forget notification (return ignored), anywhere — Svelte prop *or* JS config field (`selectCallback`, `clickCallback`) | It's an **event**, not a callback; the `Callback` suffix falsely promises a consumed return value | Rename to `on*` (`onSelect`, `onClick`), and/or dispatch a bare `CustomEvent` |
 | Inventing a new lifecycle verb (`setup`, `boot`, `start`, `wakeup`) | Vocabulary sprawl | Pick from the list above (`connect`, `mount`, `attach`, `register`) and use it everywhere in the package |
 | `validateX()` that's read-only inspection | Wrong verb | `checkX()` |
 | `checkX()` that throws on bad input from outside the trust boundary | Wrong verb | `validateX()` |
@@ -325,7 +332,7 @@ Two reference implementations are cited throughout this guide — one for each h
 - Side layer: `types.ts` (models), `logger.ts` (helpers + `LOGGING_CATEGORIES`), `tooltip.ts` and `virtual-scroll.ts` (independently consumable).
 - Attribute mapping: a top-of-file `ATTRIBUTE_TABLE` constant drives `observedAttributes`, initial parsing, and `attributeChangedCallback` — one source of truth.
 - Booleans: every config flag prefixed `is*` or `should*`.
-- Notifications: `*Callback` in config (`selectCallback`, `deselectCallback`, `changeCallback`) **and** bare `CustomEvent` names dispatched on the host (`'select'`, `'deselect'`, `'change'`) — parallel APIs.
+- Events: `on*` in config (`onSelect`, `onDeselect`, `onChange` — return ignored, so events not callbacks) **and** bare `CustomEvent` names dispatched on the host (`'select'`, `'deselect'`, `'change'`) — parallel APIs.
 - Data extractors: `get*Callback` paired with `*Member` (`getValueCallback` + `valueMember`, `getDisplayValueCallback` + `displayValueMember`).
 - Renderers: `render*ContentCallback` (`renderOptionContentCallback`, `renderBadgeContentCallback`).
 - Internal: `handle*` methods, `*Handler` stored references for DOM listeners.
@@ -352,6 +359,6 @@ Two reference implementations are cited throughout this guide — one for each h
 - The Bliss verb registry plus the JS-specific verbs (`render`, `dispatch`, `attach`, `mount`, …).
 - The casing summary, file-naming rules, and CSS-prefix-with-BEM rule.
 
-The difference is **how the consumer subscribes to notifications**, which is dictated by the host framework — not by the library's preference.
+The difference is **how the consumer subscribes to events** (Svelte `on*` prop vs JS `on*` config field vs DOM `CustomEvent`), which is dictated by the host framework — not by the library's preference. The callback-vs-event split itself is decided by one thing only: whether the component uses the return value.
 
 A full validation of each component against the BlissFramework component-library rulebook lives in the `guidelines/web-components/` triad. See that rulebook for the CSS and theming half of the picture.
