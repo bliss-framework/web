@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), but because this is a docs site with no versioned releases, entries are grouped by date instead of by release version. Newest date on top. Within a date block, group by change type (`Added` / `Changed` / `Fixed` / `Removed`).
 
+## [2026-06-29]
+
+### Added
+
+- **PostgreSQL search-function signature convention**: added a "Search functions — `_search_criteria` and `_search_settings`" subsection to `coding-guidelines-postgres/naming-conventions.md` (under Functions, after the `has_*`/`is_*` vs `check_*`/`validate_*` comparison). Every project-owned `search_*` function now takes its filters and presentation options as **two `jsonb` bags** instead of a positional list of `_filter`/`_page_size`/`_page_number`/`_order_by`: `_search_criteria` carries *what to find* (filters), `_search_settings` carries *how to return it* (paging, ordering, behavior toggles). Identity/audit params (`_user_id`, `_correlation_id`, `_tenant_id`) and `_display_language_code` (`text default 'en'`, only when the result carries translated labels) stay positional. Documents the rationale (signature stability — new filters/sorts are additive key-set changes, not signature churn, so callers/codegen/grants stay untouched; criteria-vs-settings is a real seam that changes for different reasons), the lenient-parsing rules (ignore unknown keys, default missing keys via guarded `coalesce((_search_settings->>'page')::int, 1)` extraction, whitelist `order_by`/`order_dir` before dynamic SQL, clamp `page_size`, default both bags to `'{}'::jsonb`), and notes that the per-function key-set comment becomes the contract since the signature no longer lists filters. Updated the `search_*` verb-registry row to the new shape, added `_search_criteria` / `_search_settings` / `_display_language_code` to the standard-parameter vocabulary, and added three anti-patterns (positional filter/paging params, interpolating `order_by` into dynamic SQL, raising on unknown criteria keys).
+
 ## [2026-06-24]
 
 ### Added

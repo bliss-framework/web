@@ -135,7 +135,7 @@ The general Bliss verb registry applies. The PG-specific shapes:
 | Verb | Means | Example |
 |------|-------|---------|
 | `get_*` | Single-row or multi-row retrieval, complete object as-is | `get_user`, `get_users`, `get_user_by_email` |
-| `search_*` | Filtered + paged retrieval | `search_users(_filter, _page_size, _page_number)` |
+| `search_*` | Filtered + paged retrieval, two-jsonb shape (see below) | `search_users(_user_id, _correlation_id, _search_criteria, _search_settings)` |
 | `create_*` | INSERT + audit + return the new row | `create_user`, `create_user_group_member` |
 | `update_*` | UPDATE + audit + return the updated row | `update_user_data`, `update_tenant` |
 | `delete_*` | DELETE (or soft-delete) + audit | `delete_user`, `delete_user_group` |
@@ -176,6 +176,61 @@ The general [Check vs Validate vs Verify vs Is/Has/Can rule](../coding-guideline
 
 The `_throw_err boolean default true` parameter on `has_*` is a PG-specific convenience: most callers want the throw-on-failure shape (one less `if` block), but a few need a silent check. Default to true; pass `:= false` at the call site to opt out.
 
+### Search functions — `_search_criteria` and `_search_settings`
+
+`search_*` functions take their filters and presentation options as **two `jsonb` parameters** instead of a positional list of `_filter`, `_page_size`, `_page_number`, `_order_by`, … . Every project-owned search function follows the same signature:
+
+```sql
+create or replace function auth.search_users(
+    _user_id               bigint,
+    _correlation_id        text,
+    _display_language_code text    default 'en',           -- only when the result carries labels
+    _search_criteria       jsonb   default '{}'::jsonb,    -- WHAT to find   (filters)
+    _search_settings       jsonb   default '{}'::jsonb,    -- HOW to return it (paging, ordering)
+    _tenant_id             integer default 1
+)
+returns TABLE(__user_id bigint, __username text, __total_count bigint)
+language plpgsql
+as $$ ... $$;
+```
+
+The split is about **why a value changes**, not where it comes from:
+
+| Parameter | Carries | Example |
+|-----------|---------|---------|
+| `_search_criteria` | **What to find** — filters only | `{"text": "novak", "status": "failed", "nace": "J", "active_only": true}` |
+| `_search_settings` | **How to return it** — paging, ordering, behavior toggles | `{"page": 1, "page_size": 100, "order_by": "generated_at", "order_dir": "desc", "search_in_attachments": true}` |
+
+Identity and presentation parameters stay **positional** — they are not search inputs:
+
+- `_user_id`, `_correlation_id`, `_tenant_id` — identity / audit, exactly as on every other `auth.*` function.
+- `_display_language_code` — positional, present **only** when the function returns human-readable labels to translate. Omit it for ID-only / raw-data searches.
+
+**Why two jsonb bags instead of positional filter params:**
+
+- **Signature stability.** Adding a new filter or a new sort option is an additive change to a documented key set, not a new positional parameter. The function signature — and therefore every caller, every code generator, and every `grant` — stays untouched. This is [Be replaceable](../consistency-is-bliss.md#be-replaceable) applied to the call boundary: the contract you publish today survives the next ten filters.
+- **Criteria vs settings is a real seam.** "Find failed jobs in sector J" (criteria) and "page 2, 100 per page, newest first" (settings) change for different reasons, are built by different parts of the UI, and are often cached/persisted separately. Keeping them in two bags keeps each one readable.
+
+**Parse leniently** — the function is forgiving about what arrives:
+
+- **Unknown keys are ignored.** Never raise on an unrecognized filter; a newer client may send keys an older function doesn't read yet.
+- **Missing keys fall back to defaults**, read through a guarded extraction:
+
+```sql
+declare
+    __page      integer := coalesce((_search_settings->>'page')::int, 1);
+    __page_size integer := least(coalesce((_search_settings->>'page_size')::int, 100), 1000);
+    __order_by  text    := coalesce(_search_settings->>'order_by', 'created_at');
+    __text      text    := nullif(_search_criteria->>'text', '');
+begin
+    ...
+```
+
+- **Whitelist `order_by` / `order_dir`.** Never interpolate them straight into dynamic SQL. Map the incoming key to a known column or expression, reject (or default) anything else, and `least(...)`-clamp `page_size` to a sane maximum.
+- **Default both bags to `'{}'::jsonb`** so `search_users(_user_id, _correlation_id)` is a valid "first page, default order, no filters" call.
+
+Document the recognized keys of each bag in a comment above the function — since the signature no longer lists them, that comment **is** the contract.
+
 ## Parameters and variables — the underscore-prefix rules
 
 This is the single most important PG-specific convention. Get it wrong and PL/pgSQL ambiguity errors will hunt you.
@@ -206,6 +261,9 @@ A small ubiquitous vocabulary, repeated across the codebase:
 | `_throw_err` | `boolean default true` | Silent vs throwing variant of a predicate |
 | `_request_context` | `jsonb default null` | Optional structured context (IP, user-agent, etc.) for audit |
 | `_identifier` | `text` | Generic resolver input — could be an ID, UUID, or code; the resolver figures out which |
+| `_search_criteria` | `jsonb default '{}'::jsonb` | Search filters — *what* to find. Unknown keys ignored, missing keys defaulted. |
+| `_search_settings` | `jsonb default '{}'::jsonb` | Paging / ordering / behavior — *how* to return the result. |
+| `_display_language_code` | `text default 'en'` | Display language for translated labels; only on functions that return labels. |
 
 **Order convention:** actor / audit (`_updated_by`, `_user_id`, `_correlation_id`) first, then the operation target (`_target_user_id`, `_perm_code`), then options (`_request_context`, `_tenant_id`, `_throw_err`) with defaults last so the call site can omit them.
 
@@ -614,6 +672,9 @@ Default to writing no comment. Add one only when the **why** is non-obvious — 
 | `returns setof record` | Caller must specify column types | `returns TABLE(__col1 type, __col2 type, ...)` |
 | `ext.ltree` in an `auth.*` parameter | Client libraries cannot map extension types | Accept `text`, convert internally with `ext.text2ltree(...)` |
 | Re-implementing `internal.resolve_cross_tenant_access` logic inline | DRY violation; rules diverge | Call the resolver |
+| `search_x(_filter, _page_size, _page_number, _order_by, ...)` positional | Every new filter or sort option churns the signature and every caller | Two jsonb bags: `_search_criteria` (filters) + `_search_settings` (paging/order) |
+| Interpolating `_search_settings->>'order_by'` into dynamic SQL | SQL injection / invalid-column errors | Whitelist the key → column/expression mapping; default on miss |
+| `raise`-ing on an unknown `_search_criteria` key | Breaks forward compatibility with newer clients | Ignore unknown keys; default missing ones |
 | `enum` type for a reference list | Hard to extend, no metadata | `const.<concept>_type` table + FK |
 | Down-migration script | Forward-only is the convention | Write the next forward script |
 
