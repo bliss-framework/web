@@ -14,7 +14,7 @@ Read the [general coding guidelines](../coding-guidelines/index.md) and [general
 |-------|-----------------------|-------------------|
 | Runtime | One process, threads inside | One process, `async`/`await` over the thread pool; work is `Task`-based |
 | Layering | I/O → Management → Providers | `*Controller` → `*Manager` → `*Provider`, plus `*Service` in the Side layer |
-| Solution shape | Folders / projects | Three projects: `*.Web` (I/O + Management + Providers), `*.Database` (generated), `*.Common` (shared) |
+| Solution shape | Folders / projects | One project by default; split into `*.Web` / `*.Database` / `*.Common` only when a second app reuses code or size demands it |
 | Identifiers | Varies | `PascalCase` for types/methods/properties, `camelCase` for locals/parameters/**fields** (no `_` prefix — see [naming](./naming-conventions.md#private-fields-plain-camelcase)) |
 | Errors | Varies | Exceptions, caught once in `CatchMiddleware`; the I/O boundary emits a `ResponseModel<T>` / `ErrorResponseModel<T>` envelope |
 | Validation | Often inside services | At the I/O layer (controller / model binding) and at the boundary of each manager call |
@@ -35,9 +35,18 @@ These Bliss principles apply unchanged:
 5. **[Restrain yourself](../key-elements.md#restrain-yourself)** — one response envelope, one `UserContext` shape, one logging convention, one way of reading configuration. Pick once, apply everywhere.
 6. **Side layer purity** — `Models`, `Mappers`, and `Helpers` carry no dependency on controllers, on the DI container, or on `HttpContext`. They could be lifted into a class library tomorrow. `KeenMate.DocumentHub.Common` is exactly that library.
 
-## The three-project split
+## One project, or several
 
-Every ASP.NET service we ship is one solution with (at least) three projects:
+We do **not** split a solution into multiple projects (DLLs) for its own sake. The default is a **single project** holding the whole trio, the Side layer, and usually the generated database code too. [Use only what you need](../learning-guidelines/basic-principles.md#use-only-what-you-need) applies to assembly boundaries as much as to interfaces: another project is another `.csproj`, another build artifact, another set of references to keep in sync — pay that cost only when something concrete buys it back.
+
+Extract a separate project when:
+
+- **A second app in the solution needs to reuse code.** A console importer, a background worker, or a CLI tool alongside the web app that shares the database access or common helpers — pull the reused code into a `*.Database` and/or `*.Common` project so both apps reference one copy instead of duplicating it. This is the usual reason we end up with more than one project.
+- **The codebase is big enough that isolation aids clarity.** A large, self-contained, rarely-touched chunk (the generated DB layer, a bulky import subsystem) can move to its own project so it stays out of the way and doesn't rebuild on every change. Do this because it genuinely helps, not preemptively.
+
+Otherwise, keep everything in one project — **folders, not projects, separate concerns within a single app** (see [Layer-first or feature-first](#layer-first-or-feature-first)).
+
+The reference solution has grown to three projects because it has exactly the first driver — reuse across more than one app:
 
 ```
 KeenMate.DocumentHub.sln
@@ -73,7 +82,7 @@ KeenMate.DocumentHub.sln
     └── Extensions/                  #   StringExtensions, EnumerableExtensions, ...
 ```
 
-The `*.Web` project holds the trio *and* the Side layer — ASP.NET keeps them together, and that is fine. What matters is the direction of dependencies, not the project boundary: Controllers may call Managers; Managers may call Providers and Services; Providers call the outside world and nothing else in the app. Never the reverse.
+In a single-project app the same layout collapses inward: `Generated/`, the shared `Extensions/`, and the common helpers are just folders inside the one project rather than separate `.csproj` files. The `*.Web` project holds the trio *and* the Side layer either way — ASP.NET keeps them together, and that is fine. What matters is the direction of dependencies, not the assembly count: Controllers may call Managers; Managers may call Providers and Services; Providers call the outside world and nothing else in the app. Never the reverse.
 
 ## Layer-first or feature-first
 
@@ -469,7 +478,7 @@ A job is just another top-of-the-shell entry point: it builds a system `UserCont
 ## What this section covers
 
 - [Naming conventions](./naming-conventions.md) — projects and namespaces, the `*Controller` / `*Manager` / `*Provider` / `*Service` suffixes, interface (`I*`) rules, the `Async` suffix, **plain-camelCase private fields**, method verbs mapped to the Bliss registry, parameter order (`ctx` first, `CancellationToken` last), Models / Mappers / Helpers / Options / Constants shapes, casing (tabs, abbreviations kept uppercase), anti-patterns, and a worked example.
-- This page also covers the [three-project split](#the-three-project-split), the [layer-first vs feature-first](#layer-first-or-feature-first) choice and when to use each, the [Impureim mapping](#impureim-sandwich-in-c), the [UserContext rule](#the-usercontext-rule), the [generated database layer](#the-generated-database-layer), [configuration](#configuration) (appsettings layering + the Options pattern), the [response envelope and error handling](#error-handling-and-the-response-envelope), and [background jobs](#background-jobs).
+- This page also covers [one project vs several](#one-project-or-several) (split only when a second app reuses code, or size demands it), the [layer-first vs feature-first](#layer-first-or-feature-first) choice and when to use each, the [Impureim mapping](#impureim-sandwich-in-c), the [UserContext rule](#the-usercontext-rule), the [generated database layer](#the-generated-database-layer), [configuration](#configuration) (appsettings layering + the Options pattern), the [response envelope and error handling](#error-handling-and-the-response-envelope), and [background jobs](#background-jobs).
 
 ## See also
 

@@ -36,7 +36,7 @@ The solution's ReSharper settings register a fixed set of abbreviations that sta
 
 ## Projects and namespaces
 
-Three projects, three roles:
+Most apps are a **single project** (`Company.Product`); split further only when a second app reuses code or size demands it — see [One project, or several](./index.md#one-project-or-several). When a solution does split, the projects and their roles are:
 
 | Project | Role | What lives here |
 |---------|------|-----------------|
@@ -358,7 +358,7 @@ Four things in four places: the controller binds it to HTTP and the envelope; th
 ## See also
 
 - [General naming conventions](../coding-guidelines/general-naming-conventions.md) — the shared verb registry and the singular/plural rule.
-- [C# coding guidelines (this section's index)](./index.md) — the three-project split, layering, `UserContext`, configuration, error handling, jobs.
+- [C# coding guidelines (this section's index)](./index.md) — one-project-vs-several, layering, `UserContext`, configuration, error handling, jobs.
 - [PostgreSQL naming conventions](../coding-guidelines-postgres/naming-conventions.md) — governs every name you see in `DbContext`.
 - [Elixir naming conventions](../coding-guidelines-elixir/naming-conventions.md) — the same verb registry and `ctx`-first rule in a `snake_case` world.
 - [Microsoft C# coding conventions](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions) — the baseline this page extends.
