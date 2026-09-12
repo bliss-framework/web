@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), but because this is a docs site with no versioned releases, entries are grouped by date instead of by release version. Newest date on top. Within a date block, group by change type (`Added` / `Changed` / `Fixed` / `Removed`).
 
+## [2026-09-12]
+
+### Added
+
+- **"Say what the value holds" naming rule**: added a new section to `coding-guidelines/general-naming-conventions.md` (after *Name structure*, before *Language specific conventions*). A name must convey the *value* a variable holds — codes vs ids vs full codes — not merely the concept it relates to. Worked examples: a `text[]` of permission full codes is `permission_full_codes`, not `perms`; an id is `user_id` while the row/object is `user`; an expiry date is `expiration_date`, not `expiration`; and a bare `color` is ambiguous (`"red"` / `"#ff0000"` / `"rgb(255,0,0)"` / palette id?) so it should be `color_name` / `color_hex` / `color_rgb` / `color_id`. Framed as the same instinct as *Do not use abbreviations*, taken one step further (an unabbreviated but vague name is still ambiguous), and cross-linked to it.
+
+### Changed
+
+- **PostgreSQL local-variable examples**: replaced the vague `__perms text[]` example with `__permission_full_codes text[]` in both the Casing summary table and the underscore-prefix rules table of `coding-guidelines-postgres/naming-conventions.md`, so the example demonstrates the new "say what the value holds" rule and matches the `permission.full_code` / `uq_permission_full_code` vocabulary.
+
 ## [2026-08-14]
 
 ### Added

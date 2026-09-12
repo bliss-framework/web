@@ -81,6 +81,17 @@ There are also rules that specify hierarchy of names:
 - If you create a database view, primary object name is in singular, secondary in plural, for example, _user\_group\_members_
 - If you create a database function, primary object name is in singular, secondary in plural, for example, _search\_user\_group\_members_
 
+## Say what the value holds, not just its concept
+
+A name must convey the **value** a variable holds, not merely the concept it relates to. The reader should never have to guess whether a name refers to codes, ids, or full codes — the name should already answer that.
+
+- A `text[]` of permission full codes is `permission_full_codes`, not `perms`. `perms` names the *concept*; it doesn't say what shape of value is inside — a code? an id? a full code? an object?
+- A user's identifier is `user_id`; the user row or object is `user`. Don't call an id `user`.
+- A date on which something expires is `expiration_date`, not `expiration`.
+- A `color` property is ambiguous — do you enter `"red"`, `"#ff0000"`, `"rgb(255,0,0)"`, or a palette id? Name it for the value it expects: `color_name`, `color_hex`, `color_rgb`, or `color_id`.
+
+This is the same instinct as [Do not use abbreviations](#name-structure), taken one step further: an unabbreviated but vague name (`permissions` for an array of codes) is still ambiguous. Spell out *both* the concept and the kind of value. The extra characters cost nothing; the ambiguity they remove is paid back on every read.
+
 ## Language specific conventions
 
 There are language/framework specific naming conventions for every language/framework we use. 

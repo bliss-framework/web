@@ -19,7 +19,7 @@ The reference implementation cited throughout — `postgresql-permissions-model`
 | Column names | snake_case | `user_id`, `created_at`, `nrm_search_data` |
 | Function names | snake_case, `[verb]_[noun]` | `create_user`, `get_user`, `has_permission`, `enable_user_group` |
 | Function parameters | `_snake_case` (single leading underscore) | `_user_id`, `_correlation_id`, `_tenant_id` |
-| Local variables (PL/pgSQL) | `__snake_case` (double leading underscore) | `__user_id`, `__perms text[]`, `__expiration_date` |
+| Local variables (PL/pgSQL) | `__snake_case` (double leading underscore) | `__user_id`, `__permission_full_codes text[]`, `__expiration_date` |
 | Return columns of `RETURNS TABLE(...)` | `__snake_case` (double leading underscore) | `returns TABLE(__user_id bigint, __is_active boolean)` |
 | Locals that clash with a `__` return column | `___snake_case` (triple leading underscore) | `___user_id` when querying a function that returns `__user_id` |
 | Trigger names | `trg_<schema>_<table>_<purpose>` | `trg_auth_calculate_user_info`, `trg_cache_user_group_member_delete` |
@@ -238,7 +238,7 @@ This is the single most important PG-specific convention. Get it wrong and PL/pg
 | Prefix | Meaning | Example |
 |--------|---------|---------|
 | `_` (single) | **Input parameter of a function.** Reserved exclusively for this purpose. | `_user_id bigint`, `_correlation_id text`, `_tenant_id integer default 1` |
-| `__` (double) | **Local variable** declared in the `declare` block. Also: **column name in a `returns TABLE(...)` clause.** | `declare __user_id bigint; __perms text[];` and `returns TABLE(__user_id bigint, __is_active boolean)` |
+| `__` (double) | **Local variable** declared in the `declare` block. Also: **column name in a `returns TABLE(...)` clause.** | `declare __user_id bigint; __permission_full_codes text[];` and `returns TABLE(__user_id bigint, __is_active boolean)` |
 | `___` (triple) | **Local variable that would otherwise collide with a `__`-prefixed return column** the function is querying. Used only for disambiguation. | `declare ___user_id bigint;` inside a function that queries another function returning `__user_id`. |
 
 **Why this matters:** PL/pgSQL resolves identifiers ambiguously across "is it a column / is it a variable / is it a parameter" boundaries. The single / double / triple convention removes the ambiguity by encoding the role into the name. A reader can tell at a glance that `_user_id` is an input, `__user_id` is a local-or-result, and `___user_id` is the disambiguated local.
