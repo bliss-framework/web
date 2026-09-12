@@ -15,7 +15,7 @@ Read the [general coding guidelines](../coding-guidelines/index.md) and [general
 | Topic | C# / Elixir service | PostgreSQL |
 |-------|---------------------|------------|
 | Runtime | Long-lived OS process | Long-lived database — code lives in the database itself |
-| Layering | I/O → Management → Providers maps to source folders | Same trio, expressed as **schemas** (`auth` / `unsecure` / `internal`+`helpers`+`error`+`triggers`) |
+| Layering | I/O → Management → Providers maps to source folders | Same trio, expressed as **schemas** (`auth`+`public` / `internal`+`unsecure` / `helpers`+`const`+`error`+`triggers`) |
 | File organization | Project structure + namespaces | Forward-only numbered scripts (`013_tables_auth.sql`, `022_functions_auth_permission.sql`) |
 | Identifiers | PascalCase / camelCase | `snake_case` everywhere — keywords, identifiers, function names, columns |
 | Errors | Exceptions with types | Numeric `errcode` raised through dedicated `error.raise_NNNNN(...)` functions |
@@ -38,41 +38,7 @@ These Bliss principles apply unchanged:
 
 ## Schema-shaped layering
 
-The three-layer Bliss model still applies, expressed as schemas:
-
-```mermaid
-sequenceDiagram
-    Application->>auth.*: calls public-API function (e.g. assign_permission)
-    auth.*->>auth.has_permission: enforce permission
-    auth.has_permission-->>auth.*: ok / raise
-    auth.*->>unsecure.*: delegate actual work
-    unsecure.*->>helpers.*: utilities (normalize_text, jsonb compare)
-    unsecure.*->>internal.*: resolvers (resolve_user, resolve_tenant)
-    unsecure.*->>auth.table: INSERT / UPDATE / DELETE
-    auth.table->>triggers.*: BEFORE — compute nrm_*, validate
-    auth.table->>triggers.*: AFTER  — invalidate cache, pg_notify
-    triggers.*-->>auth.table: ok
-    unsecure.*-->>auth.*: result
-    auth.*-->>Application: rows / void
-```
-
-- **`auth.*`, `public.*` business functions** = **I/O**. The public API surface. Every entry point starts with `perform auth.has_permission(...)` (or the silent variant) before touching data. Translates between caller and the trusted internals.
-- **`unsecure.*`** = **Management**. Trusted internal layer. Performs the actual mutations and orchestration. Never exposed directly to application code or to roles that aren't system-trusted. The name is deliberately ugly so nobody accidentally grants it.
-- **`internal.*`** = **Management's helpers**. Cross-cutting resolvers and validators (`resolve_user`, `resolve_tenant`, `resolve_cross_tenant_access`, `throw_no_permission`). One step below `unsecure.*` in trust, used by both `auth.*` and `unsecure.*`.
-- **`helpers.*`** = **Side layer / Helpers**. Pure utilities — string normalization, jsonb comparison, ltree manipulation, random-string generation. Marked `immutable` or `stable`, never touch tables.
-- **`const.*`** = **Side layer / Constants & Enums**. Lookup tables (`const.user_type`, `const.token_type`, `const.event_code`) referenced by FK instead of `CHECK` constraints. The PG equivalent of an enum that you can extend without an ALTER.
-- **`error.*`** = **Side layer / Errors**. One `raise_NNNNN(...)` function per error code. Centralizes message wording and error codes; callers `perform error.raise_NNNNN(...)`.
-- **`triggers.*`** = **Side layer / Triggers**. Trigger functions live here, not next to the table they fire on. Split by responsibility: calculated columns (`triggers.calculate_*`), cache invalidation (`triggers.cache_*`), notifications (`triggers.notify_*`).
-- **`stage.*`** = **I/O for batch imports**. Staging tables for ETL — external group sync, CSV imports, anything that lands before being processed into the canonical tables.
-- **`ext`** = **External extensions** (`ltree`, `uuid-ossp`, `unaccent`, `pg_trgm`). Pinned to one schema so search-path management is predictable.
-
-!!! warning "Don't cross the streams"
-
-    The Bliss rule that providers don't call other providers applies inside the database too. `unsecure.*` functions may call `helpers.*`, `internal.*`, and `error.*` freely — those are Side layer. They may NOT call `auth.*` functions, which would loop the permission check back on itself. Triggers may call `unsecure.*` (cache invalidation, notifications) but not `auth.*`. If you find yourself wanting `auth.foo` to call `auth.bar`, extract the shared work into `unsecure.bar` and have both call it.
-
-## The public/internal/unsecure rule in one paragraph
-
-`public` and `auth` **always** check permissions (the only exceptions are utilities like `public.get_app_version`). `internal` is for business logic that is already permission-checked by a calling `auth.*` function, or that runs in a trusted server context. `unsecure` is **only** for security-system internals — cache invalidation, identity resolution, internal session management. Do not put business logic in `unsecure` just because the permission check is inconvenient. If you need an unchecked business function, the answer is "you don't" — wrap it in an `auth.*` function and add the right permission.
+The three-layer Bliss model maps onto PostgreSQL schemas — `public` / `auth` as **I/O**, `internal` as **Management** (with `unsecure` reserved for sensitive auth/authz internals), and `helpers` / `const` / `error` / `triggers` as the **Side layer**. The full breakdown — the per-schema table, the request-flow diagram, and the calling / security rules — lives on the [Schemas & structure](schemas.md) page.
 
 ## Multi-tenant access pattern
 
@@ -108,7 +74,7 @@ select * from public.stop_version_update('1.6', _component := 'common_helpers');
 
 There is no down-migration. If you need to undo something, write the next forward script.
 
-See [naming conventions](./naming-conventions.md) for the file-numbering rules.
+See [Migrations & file organization](./migrations-and-files.md) for the file-numbering rules.
 
 ## Audit, journal, and notifications
 
@@ -125,7 +91,7 @@ Correlation IDs flow end-to-end: the application generates one per request, pass
 
 ## What this section covers
 
-- [Naming conventions](./naming-conventions.md) — schemas, tables, columns, functions, parameters, return columns, the underscore-prefix variable rules (`_` / `__` / `___`), triggers, indexes, error functions, file numbering, the public-API-types rule, the SQL-keyword-case rule, anti-patterns, worked examples.
+- [Naming conventions](./naming-conventions.md) — schemas, tables, columns, functions, parameters, return columns, the underscore-prefix variable rules (`_` / `__` / `___`), triggers, indexes, error functions, file numbering, the public-API-types rule, the SQL-keyword-case rule, anti-patterns, worked examples. Split across several focused pages.
 
 ## See also
 

@@ -58,6 +58,13 @@ nav:
   - PostgreSQL guidelines:
     - coding-guidelines-postgres/index.md
     - Naming conventions: coding-guidelines-postgres/naming-conventions.md
+    - Schemas & structure: coding-guidelines-postgres/schemas.md
+    - Tables, columns & views: coding-guidelines-postgres/tables-columns-views.md
+    - Functions: coding-guidelines-postgres/functions.md
+    - Parameters & variables: coding-guidelines-postgres/parameters-and-variables.md
+    - Triggers, indexes, constants & errors: coding-guidelines-postgres/triggers-indexes-constants-errors.md
+    - Migrations & file organization: coding-guidelines-postgres/migrations-and-files.md
+    - Anti-patterns & example: coding-guidelines-postgres/anti-patterns-and-example.md
 
   - JavaScript / web-component guidelines:
     - coding-guidelines-javascript/index.md

@@ -309,7 +309,7 @@ defmemo get_business_units(), expires_in: @common_expiration do
 end
 ```
 
-The Elixir equivalent of the [`const.*` schema](../coding-guidelines-postgres/index.md#schema-shaped-layering) on the PostgreSQL side. Locale-dependent lookups take `locale` as part of the memo key; user-dependent ones use `Memoize.Cache.get_or_run/2` with a composite key.
+The Elixir equivalent of the [`const.*` schema](../coding-guidelines-postgres/schemas.md#schemas) on the PostgreSQL side. Locale-dependent lookups take `locale` as part of the memo key; user-dependent ones use `Memoize.Cache.get_or_run/2` with a composite key.
 
 ## Configuration
 
@@ -633,7 +633,7 @@ The point of preferring combinators over hand-written `case` ladders is the same
 4. **Error reasons are call-site-specific atoms.** Strings, library structs, and ad-hoc nested tuples are out. Use `{atom, metadata_map}` only when a caller actually destructures the metadata.
 5. **The interop boundary is the context.** Providers may return raw tagged tuples from third-party libraries; contexts translate to `:result` shapes; controllers see only `Result.t()` tuples. `%Postgrex.Error{}`, `%Ecto.Changeset{}`, `%HTTPoison.Error{}` never escape the context.
 
-Postgres errors get the same treatment as every other library — match on the `pg_code` (your domain-specific 5-digit codes from [`error.raise_NNNNN`](../coding-guidelines-postgres/naming-conventions.md#error-functions-one-per-code)) at the context layer and translate to a domain atom:
+Postgres errors get the same treatment as every other library — match on the `pg_code` (your domain-specific 5-digit codes from [`error.raise_NNNNN`](../coding-guidelines-postgres/triggers-indexes-constants-errors.md#error-functions-one-per-code)) at the context layer and translate to a domain atom:
 
 ```elixir
 {:error, %Postgrex.Error{postgres: %{pg_code: "69101"}}} ->

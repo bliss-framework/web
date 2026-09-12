@@ -216,7 +216,7 @@ After `ctx`, parameters go in this order:
 3. **Filters and options** — `address_filters`, `search_filters`, `filters`.
 4. **Pagination, last** — `page`, `page_size`.
 
-This mirrors the [PostgreSQL parameter order rule](../coding-guidelines-postgres/naming-conventions.md#parameters-and-variables--the-underscore-prefix-rules). When passing through to `DbContext`, the SQL function's parameter order already follows the same convention, so the wrapper is a direct passthrough.
+This mirrors the [PostgreSQL parameter order rule](../coding-guidelines-postgres/parameters-and-variables.md#parameters-and-variables--the-underscore-prefix-rules). When passing through to `DbContext`, the SQL function's parameter order already follows the same convention, so the wrapper is a direct passthrough.
 
 ### Default arguments
 
