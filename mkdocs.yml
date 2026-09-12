@@ -48,8 +48,12 @@ nav:
     - Naming conventions: infrastructure-guidelines/naming-convention.md
 
   - C#/.NET guidelines:
-    - coding-guidelines-csharp/index.md 
+    - coding-guidelines-csharp/index.md
     - Naming conventions: coding-guidelines-csharp/naming-conventions.md
+    - Layer types: coding-guidelines-csharp/layer-types.md
+    - Side-layer types: coding-guidelines-csharp/side-layer-types.md
+    - Methods & parameters: coding-guidelines-csharp/methods-and-parameters.md
+    - Anti-patterns & example: coding-guidelines-csharp/anti-patterns-and-example.md
 
   - Elixir/Phoenix guidelines:
     - coding-guidelines-elixir/index.md 

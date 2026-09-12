@@ -128,7 +128,7 @@ The `is*` / `has*` / `can*` / `should*` prefix rule applies to **Config / Props*
 
 Data-model booleans follow HTML / DOM convention: bare `disabled`, `selected`, `checked`, `hidden`, `required`, `readonly`, `visible`, `expanded`. The HTML spec uses `<input disabled>` not `<input isDisabled>`, and forcing a prefix on a data-shape field would diverge from consumer expectations.
 
-Concretely: `multiSelect.config.isMultipleEnabled` (Config) but `option.disabled` (data model). Both are booleans, both are correct in context. KeenMate's `@keenmate/web-multiselect` made this exact transition — `MultiSelectOption` originally had `isDisabled`, renamed to `disabled` to match HTML.
+Concretely: `multiSelect.config.isMultipleEnabled` (Config) but `option.disabled` (data model). Both are booleans, both are correct in context. Keenmate s.r.o.'s `@keenmate/web-multiselect` made this exact transition — `MultiSelectOption` originally had `isDisabled`, renamed to `disabled` to match HTML.
 
 ## Boolean attributes — `bool-default-true` vs `bool-default-false`
 
@@ -165,7 +165,7 @@ The pattern:
 
 ## Callback vs event handler vs listener
 
-The KeenMate libraries use a deliberate naming hierarchy across **six** shapes — four consumer-facing, two internal. The primary seam is **not** the host framework — it's one semantic question:
+The Keenmate s.r.o. libraries use a deliberate naming hierarchy across **six** shapes — four consumer-facing, two internal. The primary seam is **not** the host framework — it's one semantic question:
 
 > **Does the component use the function's return value?**
 >
@@ -204,7 +204,7 @@ flowchart TD
 
 In words:
 
-| Job | Return used? | Pattern | KeenMate examples |
+| Job | Return used? | Pattern | Keenmate s.r.o. examples |
 |-----|--------------|---------|-------------------|
 | **Event / notification** — "tell me when X happened, I won't influence anything" | No | `on*` field (Svelte prop *or* JS config field) and/or bare `CustomEvent` for the DOM API | `onNodeClick` (treeview Svelte prop), `onSelect` (multiselect config), `'select'` (multiselect CustomEvent) |
 | **Interceptor** — "let me see X before it happens and possibly cancel or modify it" | Yes | `before*Callback`, regardless of host framework | `beforeDropCallback`, `beforeCopyCallback`, `beforeCheckboxToggleCallback` |
